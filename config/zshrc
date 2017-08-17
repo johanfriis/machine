@@ -1,0 +1,14 @@
+source "$HOME/.zsh/zplug.zsh"
+source "$HOME/.zsh/prompt.zsh"
+source "$HOME/.zsh/options.zsh"
+source "$HOME/.zsh/history.zsh"
+source "$HOME/.zsh/completion.zsh"
+source "$HOME/.zsh/filesystem.zsh"
+source "$HOME/.zsh/commands.zsh"
+source "$HOME/.zsh/git.zsh"
+source "$HOME/.zsh/man.zsh"
+source "$HOME/.zsh/misc.zsh"
+
+if [[ -f ~/.zshrc.local.zsh ]]; then
+	source "$HOME/.zshrc.local.zsh"
+fi
