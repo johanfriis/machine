@@ -9,7 +9,7 @@ if (( $+commands[git] )); then
 
     alias gi='git init'
 
-    alias gst='git status'
+    alias gs='git status'
 
     alias gsh='git show'
     alias gshs='git show --stat'
