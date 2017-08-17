@@ -22,36 +22,20 @@ setopt pushdminus
 setopt chaselinks
 
 # Better ls defaults.
-if (( $+commands[exa] )); then
-    alias ll='exa --long'
-    alias la='exa --long --all'
-    alias lg='exa --all --grid --header --long --color-scale'
-    alias lt='exa --all --header --long --tree --color-scale --ignore-glob .git'
-    function lti() {
-        emulate -LR zsh
-        exa --all --header --long --tree --color-scale --ignore-glob ".git|$1" ${@:2}
-    }
-    alias ltl='exa --all --header --long --tree --color-scale --ignore-glob .git --level'
-    function ltli() {
-        emulate -LR zsh
-        exa --all --header --long --tree --color-scale --level $1 --ignore-glob ".git|$2" ${@:3}
-    }
-else
-    # We alias gls to a git command elsewhere, so we use "command"
-    # here to prevent it from being interpreted as said git command.
-    # If you want to run coreutils ls, use "\gls".
-    if (( $+commands[gls] )); then
-        alias ll='command gls -lh --color=auto'
-        alias la='command gls -AlhF --color=auto'
-    else
-        alias ll='ls -lh'
-        alias la='ls -AlhF'
-    fi
-    if (( $+commands[tree] )); then
-        alias lt=tree
-        alias ltl='tree -L'
-    fi
-fi
+## -1 : one file per line
+## -p : --indicator-style=slash
+## -G : --no-group
+## -g : --group-directories-first
+## -h : --human-readable
+## -a : --all
+## -A : --almost-all
+## -F : --classify
+
+alias ls="ls --color=always"
+alias ll="ls -1p"
+alias lls="ls -lhGp"
+alias lla="ls -AlhGFp"
+alias llla="ls -alhFp"
 
 # These are global aliases; you can use them anywhere in a command.
 alias -g ...='../..'
