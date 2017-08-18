@@ -32,7 +32,7 @@ setopt chaselinks
 ## -F : --classify
 
 alias ls="ls --color=always"
-alias ll="ls -1p"
+alias ll="ls -1pF"
 alias lls="ls -lhGp"
 alias lla="ls -AlhGFp"
 alias llla="ls -alhFp"
