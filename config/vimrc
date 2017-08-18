@@ -1,0 +1,106 @@
+"" INIT SETTINGS
+""""""""""""""""
+
+" set mapleader
+let mapleader=','
+let maplocalleader=','
+
+
+"" BASE SETTINGS
+""""""""""""""""
+
+set nocompatible
+set number
+set ruler
+syntax on
+
+"" load the plugin and indent settings for the detected filetype
+filetype plugin indent on
+
+"" Set encoding
+set encoding=utf-8
+
+"" use 2 spaces for indentation
+set nowrap
+set tabstop=2
+set shiftwidth=2
+set softtabstop=2
+set expandtab
+
+"" show trailing chars and tabs
+set list listchars=tab:>-,trail:.
+
+"" Searching
+set hlsearch
+set incsearch
+set ignorecase
+set smartcase
+
+"" allow backspacing over everything in insert mode
+set backspace=indent,eol,start
+
+"" Directories for swp files
+set backupdir=/tmp
+set directory=/tmp
+
+"" allow buffers with unsaved changes
+set hidden
+
+"" show context when scrolling off edges
+set scrolloff=6
+
+"" change dir automatically
+set noautochdir
+
+"" set title of window
+set title
+
+"" don't echo command
+set noshowcmd
+
+"" copy to "* register by default
+set clipboard=unnamed
+
+"" we want to be quick
+set timeout timeoutlen=500 ttimeoutlen=1
+
+
+"" MAPPINGS
+"""""""""""
+
+"" i don't need semicolon in normal or visual mode
+nmap ; :
+vmap ; :
+nmap q; q:
+"" Y until end of line
+nmap Y y$
+"" keep selection on in/out-dent
+vnoremap < <gv
+vnoremap > >gv
+"" easy first char of line
+nmap - ^
+" Easier to type, and I never use the default behavior.
+noremap H ^
+noremap L g_
+
+"" easy nohl
+nmap <Leader>/ :nohl<CR>
+
+" quick cursor movement in insert mode
+imap <C-b> <Left>
+imap <C-f> <Right>
+imap <c-h> <Left>
+imap <c-l> <Right>
+imap <c-j> <Down>
+imap <c-k> <Up>
+
+" Useful bubble text mapping for arrow keys
+vnoremap <Down> xp`[V`]
+vnoremap <Up> xkP`[V`]
+
+"" cmdline bindings
+cnoremap <C-a> <Home>
+cnoremap <C-f> <Right>
+cnoremap <C-b> <Left>
+cnoremap <C-k> <Up>
+cnoremap <C-j> <Down>
