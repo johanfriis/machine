@@ -8,7 +8,7 @@ source "$HOME/.zsh/completion.zsh"
 source "$HOME/.zsh/filesystem.zsh"
 source "$HOME/.zsh/commands.zsh"
 source "$HOME/.zsh/git.zsh"
-source "$HOME/.zsh/man.zsh"
+#source "$HOME/.zsh/man.zsh"
 source "$HOME/.zsh/misc.zsh"
 
 if [[ -f ~/.zshrc.local.zsh ]]; then
