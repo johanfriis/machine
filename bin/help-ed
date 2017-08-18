@@ -28,4 +28,4 @@ else
     exit 69 # EX_UNAVAILABLE
 fi
 git add "$1.md"
-git commit -m "Create or update $1"
+git commit -m "help - Create or update '$1'"
