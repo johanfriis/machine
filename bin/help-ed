@@ -1,0 +1,31 @@
+#!/bin/sh
+
+# exit immediately if a command exits with non-zero status
+set -e
+
+if [ -z "$HELP_REPO" ]; then
+  echo "HELP_REPO environment variable must be set"
+  exit 0
+fi
+
+if [ -z "$1" ]; then
+  echo ""
+  echo "You must provide a page to edit"
+  exit 1
+fi
+
+### edit a help page
+
+cd "$HELP_REPO"
+if (which editor &> /dev/null); then
+    editor "$1.md"
+elif (which vim &> /dev/null); then
+    vim "$1.md"
+elif (which vi &> /dev/null); then
+    vi "$1.md"
+else
+    echo "Cannot find vi/vim."
+    exit 69 # EX_UNAVAILABLE
+fi
+git add "$1.md"
+git commit -m "Create or update $1"

@@ -1,0 +1,29 @@
+#!/bin/sh
+
+# exit immediately if a command exits with non-zero status
+set -e
+
+### display help
+
+if [ -z "$HELP_REPO" ]; then
+  echo "HELP_REPO environment variable must be set"
+  exit 0
+fi
+
+if [ -z "$1" ]; then
+  echo ""
+  echo "You must provide a page to show: Here is current list"
+  echo ""
+  ls -1 "$HELP_REPO"
+  exit 0
+fi
+
+readonly help=$1.md
+
+if [ -e "$HELP_REPO/$help" ]; then
+  less "$HELP_REPO/$help"
+elif ( ls -1 "$HELP_REPO" | grep -q -F "$help" ); then
+  echo 'Do you mean' `ls -1 "$HELP_REPO" | grep "$help" | sed -e 's/.md$//'` '?'
+else
+  help-ed "${help%.md}"
+fi
