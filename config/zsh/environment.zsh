@@ -8,3 +8,6 @@ PATH=/usr/local/sbin:/usr/local/bin:$PATH
 PATH=/usr/local/opt/zplug/bin:$PATH
 PATH=$HOME/bin:$PATH
 export PATH
+
+# I prefer vim for quick editing
+export EDITOR=vim

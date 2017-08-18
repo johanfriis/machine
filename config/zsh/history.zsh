@@ -34,3 +34,13 @@ setopt hist_reduce_blanks
 # instead of executing the command immediately. (Of course, the above
 # use case is better serviced by just pressing ESC twice.)
 setopt hist_verify
+
+# When saving commands, ignore duplicates, and if a duplicate
+# entry is set to be added, remove the previous instance. This
+# keeps out history of commands fresh
+setopt hist_ignore_dups
+setopt hist_expire_dups_first
+
+# Share history between sessions
+setopt share_history # share command history data
+
