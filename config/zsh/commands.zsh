@@ -7,6 +7,7 @@
 
 if (( $+commands[tmux] )); then
     alias ta='tmux attach'
+    alias tt='tmux attach -t'
     alias ts='tmux new-session -s'
 fi
 
