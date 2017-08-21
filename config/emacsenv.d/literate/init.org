@@ -1,0 +1,96 @@
+#+TITLE: Emacs configuration file
+#+BABEL: :cache yes
+#+PROPERTY: header-args :tangle yes
+
+This is an Emacs configuration file written in a literal programing style, as
+specified by Donald Knuth. It is heaviliy sourced from and inspired by various
+configurations found around the internet, primarily GitHub. It uses a curious
+way to bootstrap itself, explained in futher detail in the following section.
+This method of bootstrapping and emacs configuration written in org-mode is
+borrowed from [[https://github.com/larstvei/dot-emacs][larstvei/dot-emacs]].
+
+* Bootstraping (or Meta Configuration)
+
+  All changes to the configuration should be done in =init.org=, *not* in
+  =init.el=. Any changes in the =init.el= will be overwritten by saving
+  =init.org=. The =init.el= in this repo should not be tracked by git, and
+  is replaced the first time Emacs is started.
+
+  Emacs can't load =.org=-files directly, but =org-mode= provides functions
+  to extract the code blocks and write them to a file. There are multiple
+  ways of handling this. One can use org-modes built in loading mechanism
+  =org-babel-load-file=, or even parse out and evaluate the elisp source
+  blocks of a =org= file. Instead, this approach opts for a self compiling
+  init.el file.
+
+** A bit about the initial init.el
+
+  When this configuration is loaded for the first time, the ~init.el~ is
+  the file that is loaded. It looks like this:
+
+  #+BEGIN_SRC emacs-lisp :tangle no
+  ;; This file replaces itself with the actual configuration at first run.
+
+  ;; We can't tangle without org!
+  (require 'org)
+  ;; Open the configuration
+  (find-file (concat user-emacs-directory "init.org"))
+  ;; tangle it
+  (org-babel-tangle)
+  ;; load it
+  (load-file (concat user-emacs-directory "init.el"))
+  ;; finally byte-compile it
+  (byte-compile-file (concat user-emacs-directory "init.el"))
+  #+END_SRC
+
+  It tangles the org-file, so that this file is overwritten with the actual
+  configuration.
+
+  There is no reason to track the =init.el= that is generated; by running
+  the following command =git= will not bother tracking it:
+
+  #+BEGIN_SRC sh :tangle no
+  git update-index --assume-unchanged init.el
+  #+END_SRC
+
+  If one wishes to make changes to the repo-version of =init.el= start
+  tracking again with:
+
+  #+BEGIN_SRC sh :tangle no
+  git update-index --no-assume-unchanged init.el
+  git checkout init.el
+  #+END_SRC
+
+* Configuration Header
+
+  Enable lexical binding. This is the future of emacs and it makes sense.
+  [[https://www.emacswiki.org/emacs/DynamicBindingVsLexicalBinding][Lexical Binding]]
+
+  #+BEGIN_SRC emacs-lisp
+  ;;; -*- lexical-binding: t -*-
+  #+END_SRC
+
+* Compiling self
+
+  The =init.el= should (after the first run) mirror the source blocks in
+  the =init.org=. We can use =C-c C-v t= to run =org-babel-tangle=, which
+  extracts the code blocks from the current file into a source-specific
+  file (in this case a =.el=-file).
+
+  To avoid doing this each time a change is made we can add a function to
+  the =after-save-hook= ensuring to always tangle and byte-compile the
+  =org=-document after changes.
+
+  #+BEGIN_SRC emacs-lisp
+  (defun self/tangle-init ()
+    "If the current buffer is 'init.org' the code-blocks are
+  tangled, and the tangled file is compiled."
+    (when (equal (buffer-file-name)
+                 (expand-file-name (concat user-emacs-directory "init.org")))
+      ;; Avoid running hooks when tangling.
+      (let ((prog-mode-hook nil))
+        (org-babel-tangle)
+        (byte-compile-file (concat user-emacs-directory "init.el")))))
+
+  (add-hook 'after-save-hook 'self/tangle-init)
+  #+END_SRC
