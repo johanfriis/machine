@@ -3,7 +3,7 @@
 #+PROPERTY: header-args :tangle yes
 
 This is an Emacs configuration file written in a literal programing style, as
-specified by Donald Knuth. It is heaviliy sourced from and inspired by various
+specified by Donald Knuth. It is heavily sourced from and inspired by various
 configurations found around the internet, primarily GitHub. It uses a curious
 way to bootstrap itself, explained in futher detail in the following section.
 This method of bootstrapping and emacs configuration written in org-mode is
@@ -25,41 +25,41 @@ borrowed from [[https://github.com/larstvei/dot-emacs][larstvei/dot-emacs]].
 
 ** A bit about the initial init.el
 
-  When this configuration is loaded for the first time, the ~init.el~ is
-  the file that is loaded. It looks like this:
+   When this configuration is loaded for the first time, the ~init.el~ is
+   the file that is loaded. It looks like this:
 
-  #+BEGIN_SRC emacs-lisp :tangle no
-  ;; This file replaces itself with the actual configuration at first run.
+   #+BEGIN_SRC emacs-lisp :tangle no
+     ;; This file replaces itself with the actual configuration at first run.
 
-  ;; We can't tangle without org!
-  (require 'org)
-  ;; Open the configuration
-  (find-file (concat user-emacs-directory "init.org"))
-  ;; tangle it
-  (org-babel-tangle)
-  ;; load it
-  (load-file (concat user-emacs-directory "init.el"))
-  ;; finally byte-compile it
-  (byte-compile-file (concat user-emacs-directory "init.el"))
-  #+END_SRC
+     ;; We can't tangle without org!
+     (require 'org)
+     ;; Open the configuration
+     (find-file (concat user-emacs-directory "init.org"))
+     ;; tangle it
+     (org-babel-tangle)
+     ;; load it
+     (load-file (concat user-emacs-directory "init.el"))
+     ;; finally byte-compile it
+     (byte-compile-file (concat user-emacs-directory "init.el"))
+   #+END_SRC
 
-  It tangles the org-file, so that this file is overwritten with the actual
-  configuration.
+   It tangles the org-file, so that this file is overwritten with the actual
+   configuration.
 
-  There is no reason to track the =init.el= that is generated; by running
-  the following command =git= will not bother tracking it:
+   There is no reason to track the =init.el= that is generated; by running
+   the following command =git= will not bother tracking it:
 
-  #+BEGIN_SRC sh :tangle no
-  git update-index --assume-unchanged init.el
-  #+END_SRC
+   #+BEGIN_SRC sh :tangle no
+     git update-index --assume-unchanged init.el
+   #+END_SRC
 
-  If one wishes to make changes to the repo-version of =init.el= start
-  tracking again with:
+   If one wishes to make changes to the repo-version of =init.el= start
+   tracking again with:
 
-  #+BEGIN_SRC sh :tangle no
-  git update-index --no-assume-unchanged init.el
-  git checkout init.el
-  #+END_SRC
+   #+BEGIN_SRC sh :tangle no
+     git update-index --no-assume-unchanged init.el
+     git checkout init.el
+   #+END_SRC
 
 * Configuration Header
 
@@ -67,7 +67,7 @@ borrowed from [[https://github.com/larstvei/dot-emacs][larstvei/dot-emacs]].
   [[https://www.emacswiki.org/emacs/DynamicBindingVsLexicalBinding][Lexical Binding]]
 
   #+BEGIN_SRC emacs-lisp
-  ;;; -*- lexical-binding: t -*-
+    ;;; -*- lexical-binding: t -*-
   #+END_SRC
 
 * Compiling self
@@ -82,15 +82,406 @@ borrowed from [[https://github.com/larstvei/dot-emacs][larstvei/dot-emacs]].
   =org=-document after changes.
 
   #+BEGIN_SRC emacs-lisp
-  (defun self/tangle-init ()
-    "If the current buffer is 'init.org' the code-blocks are
-  tangled, and the tangled file is compiled."
-    (when (equal (buffer-file-name)
-                 (expand-file-name (concat user-emacs-directory "init.org")))
-      ;; Avoid running hooks when tangling.
-      (let ((prog-mode-hook nil))
-        (org-babel-tangle)
-        (byte-compile-file (concat user-emacs-directory "init.el")))))
+    (defun self/tangle-init ()
+      "If the current buffer is 'init.org' the code-blocks are
+    tangled, and the tangled file is compiled."
+      (when (equal (buffer-file-name)
+                   (expand-file-name (concat user-emacs-directory "init.org")))
+        ;; Avoid running hooks when tangling.
+        (let ((prog-mode-hook nil))
+          (org-babel-tangle)
+          (byte-compile-file (concat user-emacs-directory "init.el")))))
 
-  (add-hook 'after-save-hook 'self/tangle-init)
+    (add-hook 'after-save-hook 'self/tangle-init)
+  #+END_SRC
+
+* Dogfooding
+
+  A series of quick modifications that actually make it bearable to write
+  this configuration file itself in emacs org-mode.
+
+  #+BEGIN_SRC emacs-lisp
+    (setq byte-compile-warnings nil)
+
+    (defun self/reload-init ()
+      "Reload init.el."
+      (interactive)
+      (message "Reloading init.el...")
+      (if (load (concat user-emacs-directory "init.el") 'noerror 'nomessage)
+	  (message "Reloading init.el... done.")
+	(message "Reloading init.el... error.")))
+    (global-set-key (kbd "C-c C-r") 'self/reload-init)
+  #+END_SRC
+
+* Early Bird Config
+
+  We need to set some variables very early on, to determine
+  behaviour of later packages and tools.
+  
+  Define =no-littering= config and data directories now. We will
+  be using the same directories for other files, so we might
+  as well set them up now. In addition to defining the variables
+  we will also create the directories if they don't already exist.
+  
+  #+BEGIN_SRC emacs-lisp
+    (setq no-littering-etc-directory
+	  (expand-file-name (convert-standard-filename "etc/") user-emacs-directory))
+    (setq no-littering-var-directory
+	  (expand-file-name (convert-standard-filename "var/") user-emacs-directory))
+    (unless (file-directory-p no-littering-etc-directory)
+      (make-directory no-littering-etc-directory))
+    (unless (file-directory-p no-littering-var-directory)
+      (make-directory no-littering-var-directory))
+  #+END_SRC
+  
+  Set the location of enacs NSM (Network Security Manager) file.
+  This location is the same used by =no-littering= package later.
+  Consider adding a pull request to =no-littering= repo. See [[https://github.com/raxod502/no-littering][README]]
+  
+  #+BEGIN_SRC emacs-lisp
+    (setq nsm-settings-file (concat user-emacs-directory "var/network-security.data"))
+  #+END_SRC
+
+* Package Management
+
+  For package management, this instance of the config uses =straight.el=.
+  For all intents and purposes I will try to avoid =package.el=.
+  
+  This means that we disable automatic package initialization by setting
+  =package-enable-at-startup= to nil. See [[https://www.reddit.com/r/emacs/comments/1rdstn/set_packageenableatstartup_to_nil_for_slightly/][reddit]] and [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Packaging-Basics.html][manual]].
+  
+  #+BEGIN_SRC emacs-lisp
+    (setq package-enable-at-startup nil)
+  #+END_SRC
+  
+  We need some code to bootstrap the package manager since it is obviously
+  not able to package manage itself. See the [[https://github.com/raxod502/straight.el][README]].
+  
+  #+BEGIN_SRC emacs-lisp
+    (let ((bootstrap-file (concat user-emacs-directory "straight/bootstrap.el")))
+      (unless (file-exists-p bootstrap-file)
+	(with-current-buffer
+	    (url-retrieve-synchronously
+	     "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+	     'silent 'inhibit-cookies)
+	  (delete-region (point-min) url-http-end-of-headers)
+	  (eval-buffer)))
+      (load bootstrap-file nil 'nomessage))
+  #+END_SRC
+  
+  We then immediataly load =use-package= for the rest of our
+  package management / configuration needs. This package handles
+  a lot of useful tasks for us, like autoloading functions, binding
+  keys, registering major modes and lazy-loading, through the use
+  of keywords. See the [[https://github.com/jwiegley/use-package][README]].
+  
+  #+BEGIN_SRC emacs-lisp
+    (straight-use-package '(use-package
+			     :host github
+			     :repo "jwiegley/use-package"))
+  #+END_SRC
+  
+  Tell =use-package= to automatically install packages if they are
+  missing. By default, packages are installed via [[https://github.com/raxod502/straight.el][straight.el]],
+  which draws package installation recipes (short lists explaining
+  where to download the package) from [[http://melpa.org][MELPA]], [[https://elpa.gnu.org/][GNU ELPA]] and
+  [[https://emacsmirror.net/][EmacsMirror]]. You can also specify a recupe manually by putting
+  =:recipe= in the =use-package= call, which is an extension to
+  =use-package= provided by straight.el. Learn more about recipe
+  formatting from the [[https://github.com/melpa/melpa#recipe-format][MELPA README]].
+  
+  #+BEGIN_SRC emacs-lisp
+    (setq use-package-always-ensure t)
+  #+END_SRC
+  
+  Tell use-package to always load packages lazily unless told
+  otherwise. It's nicer to have this stort of thing be deterministic:
+  if =:demand= is present, the loading is eager; otherwise, the
+  loading is lazy. See [[https://github.com/jwiegley/use-package#notes-about-lazy-loading][lazy loading notes]].
+  
+  #+BEGIN_SRC emacs-lisp
+    (setq use-package-always-defer t)
+  #+END_SRC
+
+* Hygiene
+
+  This section, along with some of the configuration in the
+  [[Early Bird]] section deals with keeping emacs from placing files
+  just everywhere. The =no-littering= package changes default paths
+  for a lot of different pacakges, keeping the =emacs.d= folder clean.
+  See it's [[https://github.com/raxod502/no-littering][README]]
+  
+  #+BEGIN_SRC emacs-lisp
+    (use-package no-littering
+      :demand t)
+  #+END_SRC
+  
+* QoL and Non-Color-Theme Appearance tweaks
+
+  Disable the *About GNU Emacs* buffer at startup, and go straight
+  for the scratch buffer. This is especially useful because the
+  startup buffer is "special" and some features that are supposed
+  to be globally available to not work in it (E.g., Projectile.)
+  #+BEGIN_SRC emacs-lisp
+    (setq inhibit-startup-message t)
+  #+END_SRC
+  
+  Disable the initial *scratch* message
+  #+BEGIN_SRC emacs-lisp
+    (setq initial-scratch-message nil)
+  #+END_SRC
+  
+  Disable the menu bar.
+  #+BEGIN_SRC emacs-lisp
+    (menu-bar-mode -1)
+  #+END_SRC
+  
+  Never ever ring an alarm bell, please.
+  #+BEGIN_SRC emacs-lisp
+    (setq ring-bell-function #'ignore)
+  #+END_SRC
+  
+  Make =mode-line-position= show the column, not just the row.
+  #+BEGIN_SRC emacs-lisp
+    (column-number-mode 1)
+  #+END_SRC
+  
+  Display keystrokes in the echo area almost immediately, not after
+  one second. We can not set the delay to zero, since somebody thought
+  it would be a good idea to have that value suppress keystroke
+  display entirely.
+  #+BEGIN_SRC emacs-lisp
+    (setq echo-keystrokes 1e-6)
+  #+END_SRC
+  
+  When point is on a paren, highlight the matching paren, event if it
+  wasn't just typed. Also, do it immediately, instead of after 1/8 of
+  a second. Note that =show-paren-delay= must be changed *before*
+  turning on =show-paren-mode= in order for the change to take effect.
+  #+BEGIN_SRC emacs-lisp
+    (setq show-paren-delay 0)
+    (show-paren-mode t)
+  #+END_SRC
+  
+  Automatically revert files that were changed on disk, if they have
+  not been modified in Emacs since last time they were saved. Turn the
+  delay on auto-reloading down from 5 seconds to 1 second. We have to
+  do this before turning on =auto-revert-mode= for the change to take
+  effect. The setting could be set through =customize-set-variable=,
+  but apparently that is slow enough to show up in profiling.
+  
+  Auto reverting can be expanded more, to only revert visible
+  buffers, disable user confirmation and other tweaks.
+  See a [[https://github.com/raxod502/radian/blob/master/radian-emacs/radian-revert.el][sample implementation]] of these features.
+  #+BEGIN_SRC emacs-lisp
+    (setq auto-revert-interval 1)
+    (global-auto-revert-mode 1)
+  #+END_SRC
+  
+** Custom mode-line
+   
+   The following code is taken, almost unmodified, from the
+   brilliant emacs setup of [[https://github.com/raxod502/radian][radox502]].
+   
+   #+BEGIN_SRC emacs-lisp
+     ;;; The following code customizes the mode bar to something like:
+     ;;; [*] init.el        96% (2410,30)  [radian:master*]  (Emacs-Lisp Paredit AggrIndent)
+
+     (defun custom/mode-line-buffer-modified ()
+       "Return a mode line construct indicating buffer modification status.
+     This is [*] if the buffer has been modified and whitespace
+     otherwise. (Non-file-visiting buffers are never considered to be
+     modified.) It is shown in the same color as the buffer name, i.e.
+     `mode-line-buffer-id'."
+       (propertize (if (and (buffer-modified-p)
+			    (buffer-file-name))
+		       "[*]" "   ")
+		   ;; Make sure to show it in the same color as the buffer
+		   ;; name.
+		   'face 'mode-line-buffer-id))
+
+     ;; Normally the buffer name is right-padded with whitespace until it
+     ;; is at least 12 characters. This is a waste of space, so we
+     ;; eliminate the padding here.
+     (setq-default mode-line-buffer-identification
+		   (propertized-buffer-identification "%b"))
+
+     (defvar-local custom/mode-line-project-and-branch nil
+       "Mode line construct showing Projectile project and Git status.
+     The format is [project:branch*], where the * is shown if the
+     working directory is dirty. Either component can be missing; this
+     might happen if Projectile is not installed or if the project is
+     not version-controlled with Git. If nothing should be displayed,
+     this variable is set to nil.
+     This variable is actually only a cached value; it is set by
+     `custom/compute-mode-line-project-and-branch' for performance
+     reasons.")
+
+     ;; Don't clear the cache when switching major modes (or using M-x
+     ;; normal-mode).
+     (put 'custom/mode-line-project-and-branch 'permanent-local t)
+
+     (defun custom/compute-mode-line-project-and-branch ()
+       (let ((old custom/mode-line-project-and-branch)
+	     (new
+	      (let* (;; Don't insist on having Projectile loaded.
+		     (project-name (when (featurep 'projectile)
+				     (projectile-project-name)))
+		     ;; Projectile returns "-" to mean "no project". I'm
+		     ;; still wondering what happens if someone makes a
+		     ;; project named "-".
+		     (project-name (unless (equal project-name "-")
+				     project-name))
+		     ;; Check if we are actually in a Git repo, and Git is
+		     ;; available.
+		     (git (and (executable-find "git")
+			       (locate-dominating-file default-directory ".git")))
+		     (branch-name
+		      (when git
+			;; Determine a reasonable string to show for the
+			;; current branch. This is actually more or less
+			;; the same logic as we use for the Radian zsh
+			;; prompt.
+			(with-temp-buffer
+			  ;; First attempt uses symbolic-ref, which returns
+			  ;; the branch name if it exists.
+			  (call-process "git" nil '(t nil) nil
+					"symbolic-ref" "HEAD")
+			  (if (> (buffer-size) 0)
+			      ;; It actually returns something like
+			      ;; refs/heads/master, though, so let's try to
+			      ;; trim it if possible.
+			      (let ((regex "^\\(refs/heads/\\)?\\(.+\\)$")
+				    (str (string-trim (buffer-string))))
+				(if (string-match regex str)
+				    (match-string 2 str)
+				  ;; If it's something weird then just show
+				  ;; it literally.
+				  str))
+			    ;; If symbolic-ref didn't return anything on
+			    ;; stdout (we discarded stderr), we probably
+			    ;; have a detached head and we should show the
+			    ;; abbreviated commit hash (e.g. b007692).
+			    (erase-buffer)
+			    (call-process "git" nil '(t nil) nil
+					  "rev-parse" "--short" "HEAD")
+			    (if (> (buffer-size) 0)
+				(string-trim (buffer-string))
+			      ;; We shouldn't get here. Unfortunately, it
+			      ;; turns out that we do every once in a
+			      ;; while. (I have no idea why.)
+			      "???")))))
+		     (dirty (when git
+			      (with-temp-buffer
+				(call-process "git" nil t nil
+					      "status" "--porcelain"
+					      "--ignore-submodules=none")
+				(if (> (buffer-size) 0)
+				    "*" "")))))
+		(cond
+		 ((and project-name git)
+		  (format "  [%s:%s%s]" project-name branch-name dirty))
+		 (project-name
+		  (format "  [%s]" project-name))
+		 ;; This should never happen unless you do something
+		 ;; perverse like create a version-controlled Projectile
+		 ;; project whose name is a hyphen, but we want to handle
+		 ;; it anyway.
+		 (git
+		  (format "  [%s%s]" branch-name dirty))))))
+	 (unless (equal old new)
+	   (setq custom/mode-line-project-and-branch new)
+	   (force-mode-line-update))))
+
+     ;; We will make sure this information is updated after one second of
+     ;; inactivity, for the current buffer.
+
+     (defvar custom/mode-line-timer-primary nil)
+     (defvar custom/mode-line-timer-secondary nil)
+
+     (defun custom/compute-mode-line-and-reschedule ()
+       (when custom/mode-line-timer-secondary
+	 (cancel-timer custom/mode-line-timer-secondary))
+       (custom/compute-mode-line-project-and-branch)
+       (setq custom/mode-line-timer-secondary
+	     (run-with-idle-timer
+	      (time-add 1 (current-idle-time)) nil
+	      #'custom/compute-mode-line-and-reschedule)))
+
+     (when custom/mode-line-timer-primary
+       (cancel-timer custom/mode-line-timer-primary))
+
+     (when custom/mode-line-timer-secondary
+       (cancel-timer custom/mode-line-timer-secondary))
+
+     (setq custom/mode-line-timer-primary
+	   (run-with-idle-timer
+	    1 'repeat #'custom/compute-mode-line-and-reschedule))
+
+     (setq-default mode-line-format
+		   '(;; Show [*] if the buffer is modified.
+		     (:eval (custom/mode-line-buffer-modified))
+		     " "
+		     ;; Show the name of the current buffer.
+		     mode-line-buffer-identification
+		     "   "
+		     ;; Show the row and column of point.
+		     mode-line-position
+		     ;; Show the current Projectile project.
+		     custom/mode-line-project-and-branch
+		     ;; Show the active major and minor modes.
+		     "  "
+		     mode-line-modes))
+   #+END_SRC
+   
+** Packages
+   
+   This package provides an easy way to change the display
+   of minor mode names in the mode line.
+   #+BEGIN_SRC emacs-lisp
+     (use-package diminish
+       :demand t)
+   #+END_SRC
+
+* Org Mode
+
+  #+BEGIN_SRC emacs-lisp
+    ;(defface org-block-begin-line
+    ;  '((t (:foreground "#008ED1" :background "#990000")))
+    ;  "Face used for the line delimiting the begin of source blocks.")
+
+    ;(defface org-block-background
+    ;  '((t (:background "#FFFFEA")))
+    ;  "Face used for the source block background.")
+
+    ;(defface org-block-end-line
+    ;  '((t (:foreground "#008ED1" :background "#990000")))
+    ;  "Face used for the line delimiting the end of source blocks.")
+
+    (use-package org
+      :demand t
+      :config
+      (setq org-src-fontify-natively t)
+      (add-to-list 'org-structure-template-alist
+		   (list "x" (concat "#+BEGIN_SRC emacs-lisp\n" "?\n" "#+END_SRC"))))
+  #+END_SRC
+
+* Evil (4 Life)
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package evil
+      :demand t
+      :config
+      :init
+      (setq evil-want-C-i-jump nil)
+      (evil-mode 1))
+
+    (use-package evil-org
+      :after org
+      :init
+      :config
+      (add-hook 'org-mode-hook 'evil-org-mode)
+      (add-hook 'evil-org-mode-hook
+		(lambda ()
+		  (evil-org-set-key-theme '(textobjects insert navigation additional shift todo heading)))))
   #+END_SRC
