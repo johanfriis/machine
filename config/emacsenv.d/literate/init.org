@@ -89,8 +89,8 @@ borrowed from [[https://github.com/larstvei/dot-emacs][larstvei/dot-emacs]].
                    (expand-file-name (concat user-emacs-directory "init.org")))
         ;; Avoid running hooks when tangling.
         (let ((prog-mode-hook nil))
-          (org-babel-tangle)
-          (byte-compile-file (concat user-emacs-directory "init.el")))))
+          (org-babel-tangle))))
+          ;(byte-compile-file (concat user-emacs-directory "init.el")))))
 
     (add-hook 'after-save-hook 'self/tangle-init)
   #+END_SRC
@@ -102,7 +102,6 @@ borrowed from [[https://github.com/larstvei/dot-emacs][larstvei/dot-emacs]].
 
   #+BEGIN_SRC emacs-lisp
     (setq byte-compile-warnings nil)
-
     (defun self/reload-init ()
       "Reload init.el."
       (interactive)
@@ -439,8 +438,15 @@ borrowed from [[https://github.com/larstvei/dot-emacs][larstvei/dot-emacs]].
    This package provides an easy way to change the display
    of minor mode names in the mode line.
    #+BEGIN_SRC emacs-lisp
-     (use-package diminish
+     (use-package delight
        :demand t)
+   #+END_SRC
+   
+   Set up undo-tree
+   #+BEGIN_SRC emacs-lisp
+     (use-package undo-tree
+       :delight (undo-tree-mode " \uf1bb ")
+       :init (global-undo-tree-mode))
    #+END_SRC
 
 * Org Mode
@@ -461,9 +467,11 @@ borrowed from [[https://github.com/larstvei/dot-emacs][larstvei/dot-emacs]].
     (use-package org
       :demand t
       :config
-      (setq org-src-fontify-natively t)
-      (add-to-list 'org-structure-template-alist
-		   (list "x" (concat "#+BEGIN_SRC emacs-lisp\n" "?\n" "#+END_SRC"))))
+      (progn
+	(setq org-src-fontify-natively t)
+	(setq org-fontify-whole-heading-line t)
+	(add-to-list 'org-structure-template-alist
+		     (list "x" (concat "#+BEGIN_SRC emacs-lisp\n" "?\n" "#+END_SRC")))))
   #+END_SRC
 
 * Evil (4 Life)
@@ -471,10 +479,13 @@ borrowed from [[https://github.com/larstvei/dot-emacs][larstvei/dot-emacs]].
   #+BEGIN_SRC emacs-lisp
     (use-package evil
       :demand t
-      :config
+      :defines (evil-mode)
+      :bind (:map evil-normal-state-map
+		  ("`" . buffer-menu))
       :init
-      (setq evil-want-C-i-jump nil)
-      (evil-mode 1))
+      (progn
+	(setq evil-want-C-i-jump nil)
+	(evil-mode 1)))
 
     (use-package evil-org
       :after org
@@ -484,4 +495,61 @@ borrowed from [[https://github.com/larstvei/dot-emacs][larstvei/dot-emacs]].
       (add-hook 'evil-org-mode-hook
 		(lambda ()
 		  (evil-org-set-key-theme '(textobjects insert navigation additional shift todo heading)))))
+  #+END_SRC
+
+* Some Theme stuff
+  #+BEGIN_SRC emacs-lisp
+    ;(use-package dracula-theme
+    ;  :init
+    ;  (load-theme 'dracula))
+    ;(use-package leuven-theme
+    ;  :init
+    ;  (load-theme 'leuven t))
+    (use-package solarized-theme
+      :init
+      (load-theme 'solarized-light t))
+  #+END_SRC
+
+* Javascript
+
+
+
+  Setup regular JS2 mode
+  #+BEGIN_SRC emacs-lisp
+    (use-package js2-mode
+	:defer t
+	:init
+	(progn
+	(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode)))
+	:config
+	(progn
+	(setq js2-basic-offset 2)
+	(setq js2-strict-trailing-comma-warning nil)
+	(setq js2-strict-missing-semi-warning nil)))
+  #+END_SRC
+  
+  Experiment with rjsx-mode
+  #+BEGIN_SRC emacs-lisp
+    (use-package rjsx-mode
+      :delight (rjsx-mode " \ue625 ")
+      :bind (:map rjsx-mode-map
+		  ("<" . nil)
+		  ("C-d" . nil))
+      :init
+      (progn
+	(add-to-list 'auto-mode-alist '("\\.js\\'" . rjsx-mode))))
+  #+END_SRC
+  
+  
+  add prettier support
+  #+BEGIN_SRC emacs-lisp
+    (use-package prettier-js
+      :init
+      (progn
+	(add-hook 'js2-mode-hook 'prettier-js-mode)
+	(add-hook 'rjsx-mode-hook 'prettier-js-mode)
+	(setq prettier-js-args '(
+				 "--trailing-comma" "es5"
+				 "--single-quote"
+				 "--no-semi"))))
   #+END_SRC
