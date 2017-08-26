@@ -16,3 +16,8 @@ function _accept-line() {
     zle .accept-line
 }
 zle -N accept-line _accept-line
+
+# move files written to $HOME if we can
+if [[ -d "$HOME/.tmp" ]]; then
+  export LESSHISTFILE="$HOME/.tmp/lesshst"
+fi

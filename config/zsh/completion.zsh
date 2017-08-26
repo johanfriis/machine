@@ -2,6 +2,15 @@
 ### COMPLETION ###
 ##################
 
+# autoload compinit, but place it's cache
+# file in our .tmp file if it exists
+autoload -U compinit
+if [[ -d "$HOME/.tmp" ]]; then
+  compinit -i -d "$HOME/.tmp/zcompdump"
+else
+  compinit -i
+fi
+
 # For ambiguous completions, use an interactive menu (which can be
 # escaped with C-g) instead of overwriting the current command.
 zstyle ':completion:*' menu select
