@@ -4,14 +4,17 @@
 
 # Never discard history within a session, or at least not before any
 # reasonable amount of time.
-HISTSIZE=1000000
+export HISTSIZE=1000000
 
-# Save history to disk. The value of this option is the default
-# installed by zsh-newuser-install.
-HISTFILE=~/.zsh_history
+# Save history to disk.
+if [[ -d "$HOME/.tmp" ]]; then
+  export HISTFILE="$HOME/.tmp/zsh_history"
+else
+  export HISTFILE="$HOME/.zsh_history"
+fi
 
 # Never discard history in the file on disk, either.
-SAVEHIST=1000000
+export SAVEHIST=1000000
 
 # Don't save commands to the history if they start with a leading
 # space. This is useful if you have to pass a password as a parameter

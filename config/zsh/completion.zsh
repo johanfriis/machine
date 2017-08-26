@@ -6,6 +6,7 @@
 # file in our .tmp file if it exists
 autoload -U compinit
 if [[ -d "$HOME/.tmp" ]]; then
+  echo "I AM HIDING ZCOMPDUMP FILE"
   compinit -i -d "$HOME/.tmp/zcompdump"
 else
   compinit -i

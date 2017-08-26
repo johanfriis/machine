@@ -10,7 +10,6 @@ source "$HOME/.zsh/commands.zsh"
 source "$HOME/.zsh/git.zsh"
 #source "$HOME/.zsh/man.zsh"
 source "$HOME/.zsh/misc.zsh"
-source "$HOME/.zsh/no-littering.zsh"
 
 if [[ -f ~/.zshrc.local.zsh ]]; then
 	source "$HOME/.zshrc.local.zsh"
