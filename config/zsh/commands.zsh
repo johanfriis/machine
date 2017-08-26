@@ -9,6 +9,7 @@ if (( $+commands[tmux] )); then
     alias ta='tmux attach'
     alias tt='tmux attach -t'
     alias ts='tmux new-session -s'
+    alias tl='tmux list-session'
 fi
 
 ######################################################################
@@ -22,8 +23,9 @@ fi
 #### Emacs
 
 if (( $+commands[emacs] )); then
-    alias e='emacs -nw'
-    alias eq='emacs -nw -Q'
+    alias emacs='emacs -nw'
+    alias e='emacs'
+    alias eq='emacs -Q'
 fi
 
 if (( $+commands[emacsclient] )); then
