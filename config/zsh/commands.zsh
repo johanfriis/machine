@@ -42,3 +42,10 @@ elif (( $+commands[vim] )); then
 elif (( $+commands[vi] )); then
     alias v='vi'
 fi
+
+######################################################################
+#### WD
+
+if (( $+commands[wd] )); then
+  alias wd='wd --config ~/.tmp/wdconfig'
+fi

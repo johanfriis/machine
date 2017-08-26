@@ -8,9 +8,9 @@ bundles=(
     # Quickly jump to directories:
     "mfaerevaag/wd, use:wd.sh, rename-to:wd, as:command"
     # Display autosuggestions from history:
-    "zsh-users/zsh-autosuggestions"
+    #"zsh-users/zsh-autosuggestions"
     # Completion definitions for lots of additional commands.
-    "zsh-users/zsh-completions"
+    #"zsh-users/zsh-completions"
 )
 
 #############################################################
@@ -48,8 +48,8 @@ fi
 
 # Install zplug:
 # $ curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh| zsh
-export ZPLUG_HOME=/usr/local/opt/zplug
-export ZSH_CACHE_DIR=$ZSH/cache
+export ZPLUG_HOME="$HOME/.tmp/zplug"
+export ZSH_CACHE_DIR="$HOME/.cache"
 
 if [[ -o login && -f $ZPLUG_HOME/init.zsh ]]; then
     . $ZPLUG_HOME/init.zsh
