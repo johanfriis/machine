@@ -1,0 +1,19 @@
+#!/bin/sh
+
+TARGET_DIR="$HOME/data/transmission/magnets"
+
+echo "Starting magnet watch"
+
+inotifywait -m -e create --format "%f" $TARGET_DIR | \
+  while read -r file;
+  do
+    echo "Saw file: $file"
+    sleep 2
+    echo "Adding magnet to transmission"
+    docker exec -i trans transmission-remote -a "$(cat $TARGET_DIR/$file)"
+    sleep 2
+    echo "Removing: $file"
+    #rm "$TARGET_DIR/$file"
+  done
+
+
