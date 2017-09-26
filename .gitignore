@@ -1,1 +1,3 @@
 init.elc
+config/emacsenv.d/literate/var
+config/emacsenv.d/literate/straight
