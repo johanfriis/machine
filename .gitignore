@@ -1,3 +1,12 @@
 init.elc
 config/emacsenv.d/literate/var
 config/emacsenv.d/literate/straight
+config/emacsenv.d/angrybacon
+config/emacsenv.d/centaur
+config/emacsenv.d/emacs-tyrant
+config/emacsenv.d/larstvei
+config/emacsenv.d/ohai-emacs
+config/emacsenv.d/radian
+config/emacsenv.d/prelude
+config/emacsenv.d/spacemacs
+config/emacsenv.d/doom
