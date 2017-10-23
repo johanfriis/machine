@@ -202,6 +202,54 @@ borrowed from [[https://github.com/larstvei/dot-emacs][larstvei/dot-emacs]].
     (setq use-package-always-defer t)
   #+END_SRC
 
+* Helper Functions
+  
+  Name of the operating system in a more sensible way
+  #+BEGIN_SRC emacs-lisp
+    (defvar custom/operating-system
+      (pcase system-type
+	('darwin 'macOS)
+	((or 'ms-dos 'windows-nt 'cygwin) 'windows)
+	(_ 'linux)))
+
+    (defun custom/system-is-mac ()
+      (eq custom/operating-system 'macOS))
+  #+END_SRC
+  
+  Utility function for running expressions only on particular OSes
+  #+BEGIN_SRC emacs-lisp
+    (defmacro custom/with-operating-system (os &rest body)
+      "If the operating system is OS, eval BODY.
+    See `custom/operating-system' for the possible values of OS,
+    which should not be quoted."
+      (declare (indent 1))
+      `(when (eq custom/operating-system ',os)
+	 ,@body))
+  #+END_SRC
+  
+  Utility functions for checking the window system
+  #+BEGIN_SRC emacs-lisp
+    (defmacro custom/with-windowed-emacs (&rest body)
+      "Eval BODY if Emacs is windowed, else return nil."
+      (declare (indent defun))
+      `(when (display-graphic-p)
+	 ,@body))
+
+    (defmacro custom/with-terminal-emacs (&rest body)
+      "Eval BODY if Emacs is not windowed, else return nil."
+      (declare (indent defun))
+      `(unless (display-graphic-p)
+	 ,@body))
+  #+END_SRC
+  
+  Make it easy to specify a number of modes to add a hook to
+  #+BEGIN_SRC emacs-lisp
+    (defmacro hook-into-modes (function mode-hooks)
+      "Add FUNCTION to hooks in MODE-HOOKS."
+      `(dolist (hook ,mode-hooks)
+	 (add-hook hook ,function)))
+  #+END_SRC
+
 * Hygiene
 
   This section, along with some of the configuration in the
@@ -217,65 +265,169 @@ borrowed from [[https://github.com/larstvei/dot-emacs][larstvei/dot-emacs]].
   
 * QoL and Non-Color-Theme Appearance tweaks
 
-  Disable the *About GNU Emacs* buffer at startup, and go straight
-  for the scratch buffer. This is especially useful because the
-  startup buffer is "special" and some features that are supposed
-  to be globally available to not work in it (E.g., Projectile.)
-  #+BEGIN_SRC emacs-lisp
-    (setq inhibit-startup-message t)
-  #+END_SRC
-  
-  Disable the initial *scratch* message
-  #+BEGIN_SRC emacs-lisp
-    (setq initial-scratch-message nil)
-  #+END_SRC
-  
-  Disable the menu bar.
-  #+BEGIN_SRC emacs-lisp
-    (menu-bar-mode -1)
-  #+END_SRC
-  
-  Never ever ring an alarm bell, please.
-  #+BEGIN_SRC emacs-lisp
-    (setq ring-bell-function #'ignore)
-  #+END_SRC
-  
-  Make =mode-line-position= show the column, not just the row.
-  #+BEGIN_SRC emacs-lisp
-    (column-number-mode 1)
-  #+END_SRC
-  
-  Display keystrokes in the echo area almost immediately, not after
-  one second. We can not set the delay to zero, since somebody thought
-  it would be a good idea to have that value suppress keystroke
-  display entirely.
-  #+BEGIN_SRC emacs-lisp
-    (setq echo-keystrokes 1e-6)
-  #+END_SRC
-  
-  When point is on a paren, highlight the matching paren, event if it
-  wasn't just typed. Also, do it immediately, instead of after 1/8 of
-  a second. Note that =show-paren-delay= must be changed *before*
-  turning on =show-paren-mode= in order for the change to take effect.
-  #+BEGIN_SRC emacs-lisp
-    (setq show-paren-delay 0)
-    (show-paren-mode t)
-  #+END_SRC
-  
-  Automatically revert files that were changed on disk, if they have
-  not been modified in Emacs since last time they were saved. Turn the
-  delay on auto-reloading down from 5 seconds to 1 second. We have to
-  do this before turning on =auto-revert-mode= for the change to take
-  effect. The setting could be set through =customize-set-variable=,
-  but apparently that is slow enough to show up in profiling.
-  
-  Auto reverting can be expanded more, to only revert visible
-  buffers, disable user confirmation and other tweaks.
-  See a [[https://github.com/raxod502/radian/blob/master/radian-emacs/radian-revert.el][sample implementation]] of these features.
-  #+BEGIN_SRC emacs-lisp
-    (setq auto-revert-interval 1)
-    (global-auto-revert-mode 1)
-  #+END_SRC
+Various UI tweaks that mainly affect GUI mode emacs
+#+BEGIN_SRC emacs-lisp
+  (menu-bar-mode -1)
+  (toggle-scroll-bar -1)
+  (tool-bar-mode -1)
+  (blink-cursor-mode -1)
+  (custom/with-windowed-emacs
+    (set-frame-font "-*-Fira Code-normal-normal-normal-*-*-*-*-*-m-0-iso10646-1" nil t))
+        
+  ;; consider replacing system-is-mac with
+  ;; (when (memq window-system '(mac ns x)))
+  ;; to capture linux usage also
+  (use-package exec-path-from-shell
+    :if (and (custom/system-is-mac) (display-graphic-p))
+    :config (setq exec-path-from-shell-check-startup-files nil)
+    :init (exec-path-from-shell-initialize))
+#+END_SRC
+
+Disable the *About GNU Emacs* buffer at startup, and go straight
+for the scratch buffer. This is especially useful because the
+startup buffer is "special" and some features that are supposed
+to be globally available to not work in it (E.g., Projectile.)
+#+BEGIN_SRC emacs-lisp
+  (setq inhibit-startup-message t)
+#+END_SRC
+
+Disable the initial *scratch* message
+#+BEGIN_SRC emacs-lisp
+  (setq initial-scratch-message nil)
+#+END_SRC
+
+Disable the menu bar.
+#+BEGIN_SRC emacs-lisp
+  (menu-bar-mode -1)
+#+END_SRC
+
+Never ever ring an alarm bell, please.
+#+BEGIN_SRC emacs-lisp
+  (setq ring-bell-function #'ignore)
+#+END_SRC
+
+Make =mode-line-position= show the column, not just the row.
+#+BEGIN_SRC emacs-lisp
+  (column-number-mode 1)
+#+END_SRC
+
+Display keystrokes in the echo area almost immediately, not after
+one second. We can not set the delay to zero, since somebody thought
+it would be a good idea to have that value suppress keystroke
+display entirely.
+#+BEGIN_SRC emacs-lisp
+  (setq echo-keystrokes 1e-6)
+#+END_SRC
+
+When point is on a paren, highlight the matching paren, event if it
+wasn't just typed. Also, do it immediately, instead of after 1/8 of
+a second. Note that =show-paren-delay= must be changed *before*
+turning on =show-paren-mode= in order for the change to take effect.
+#+BEGIN_SRC emacs-lisp
+  (setq show-paren-delay 0)
+  (show-paren-mode t)
+#+END_SRC
+
+Automatically revert files that were changed on disk, if they have
+not been modified in Emacs since last time they were saved. Turn the
+delay on auto-reloading down from 5 seconds to 1 second. We have to
+do this before turning on =auto-revert-mode= for the change to take
+effect. The setting could be set through =customize-set-variable=,
+but apparently that is slow enough to show up in profiling.
+
+Auto reverting can be expanded more, to only revert visible
+buffers, disable user confirmation and other tweaks.
+See a [[https://github.com/raxod502/radian/blob/master/radian-emacs/radian-revert.el][sample implementation]] of these features.
+#+BEGIN_SRC emacs-lisp
+  (setq auto-revert-interval 1)
+  (global-auto-revert-mode 1)
+#+END_SRC
+
+Packages dealing with lines and their length. For one, we don't want
+to truncate lines, ever. Not when they react the end of the window,
+or when they reach the end of a split window. By default, Emacs will
+truncate a line if the split window width is less than 50.
+We also want to highlight the column at position 80.
+#+BEGIN_SRC emacs-lisp
+  (setq-default truncate-lines t)
+  (setq truncate-partial-width-windows nil)
+
+  (use-package fill-column-indicator
+    :init
+    (progn
+(setq fci-rule-column 79
+      fci-rule-width 1
+      fci-rule-color "#CCCCCC"
+      fci-rule-character ?|
+      fci-rule-character-color "#CCCCCC")
+(hook-into-modes 'fci-mode '(prog-mode-hook))))
+#+END_SRC
+
+Don't create auto-save files
+#+BEGIN_SRC emacs-lisp
+  (setq auto-save-default nil)
+#+END_SRC
+
+Keep multiple numbered backups, rather than a single file. Backups
+should be made by copying, preventing hard links from being made
+pointing to the backup rather than original file. Also, allow silent
+deleting of old backup files.
+#+BEGIN_SRC emacs-lisp
+  (setq backup-by-copying 1)
+  (setq version-control t)
+  (setq delete-old-versions t)
+#+END_SRC
+
+Show indentation guides
+#+BEGIN_SRC emacs-lisp
+  (use-package indent-guide)
+#+END_SRC
+
+When reopening a file, return mark to last position
+#+BEGIN_SRC emacs-lisp
+  (save-place-mode 1)
+#+END_SRC
+
+Save minibuffer commands and their history
+#+BEGIN_SRC emacs-lisp
+  (setq savehist-save-minibuffer-history 1)
+  (setq savehist-additional-variables
+  '(kill-ring
+    search-ring
+    regexp-search-ring
+    last-kbd-macro
+    kmacro-ring
+    shell-command-history))
+  (savehist-mode 1)
+#+END_SRC
+
+Use history as a lookup instead of a log
+#+BEGIN_SRC emacs-lisp
+  (setq history-delete-duplicates t)
+#+END_SRC
+
+Usually i am careful, so i'll opt for the grown up
+version of yes-or-no-p
+#+BEGIN_SRC emacs-lisp
+  (defalias 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
+
+Start *scratch* buffer in org-mode and make it immortal
+#+BEGIN_SRC emacs-lisp
+  (setq initial-major-mode 'org-mode)
+  (with-current-buffer "*scratch*"
+    (emacs-lock-mode 'kill))
+  (use-package persistent-scratch
+    :config
+    (persistent-scratch-setup-default))
+#+END_SRC
+
+Disable Emacs' built-in version control handling. This improves
+performance and disables some annoying prompts and messages,
+especially regarding symlinks. See [[http://stackoverflow.com/a/6190338/3538165][stackoverflow.]]
+#+BEGIN_SRC emacs-lisp
+  (setq vc-handled-backends nil)
+#+END_SRC
   
 ** Custom mode-line
    
@@ -433,7 +585,7 @@ borrowed from [[https://github.com/larstvei/dot-emacs][larstvei/dot-emacs]].
 		     mode-line-modes))
    #+END_SRC
    
-** Packages
+* Packages
    
    This package provides an easy way to change the display
    of minor mode names in the mode line.
@@ -449,8 +601,116 @@ borrowed from [[https://github.com/larstvei/dot-emacs][larstvei/dot-emacs]].
        :init (global-undo-tree-mode))
    #+END_SRC
 
-* Org Mode
+* NeoTree
 
+  This package provides a helpful sidebar file and directory navigator
+  #+BEGIN_SRC emacs-lisp
+    (use-package neotree
+      :after evil
+      :config
+      (progn
+	(evil-leader/set-key
+	 "o" 'neotree-toggle)
+
+	(setq neo-window-width 38
+	      neo-theme 'ascii
+	      ;; this prevents neotree from automatically switching
+	      ;; to current files directory
+	      neo-autorefresh nil
+	      ;neo-smart-open t
+	      neo-banner-message "Press ? for neotree help"
+	      neo-show-updir-line nil
+	      neo-mode-line-type 'neotree
+	      neo-auto-indent-point t
+	      neo-create-file-auto-open t)
+
+	(add-hook 'neotree-mode-hook
+		  (lambda ()
+		    (evil-define-key 'normal neotree-mode-map (kbd "R") 'neotree-refresh)
+		    (evil-define-key 'normal neotree-mode-map (kbd "TAB") 'neotree-stretch-toggle)
+		    (evil-define-key 'normal neotree-mode-map (kbd "o") 'neotree-enter)
+		    (evil-define-key 'normal neotree-mode-map (kbd "RET") 'neotree-enter)
+		    (evil-define-key 'normal neotree-mode-map (kbd "j") 'neotree-next-line)
+		    (evil-define-key 'normal neotree-mode-map (kbd "k") 'neotree-previous-line)
+		    (evil-define-key 'normal neotree-mode-map (kbd "l") 'neotree-expand-or-open)
+		    (evil-define-key 'normal neotree-mode-map (kbd "h") 'neotree-collapse-or-up)
+		    (evil-define-key 'normal neotree-mode-map (kbd "J") 'neotree-select-down-node)
+		    (evil-define-key 'normal neotree-mode-map (kbd "K") 'neotree-select-up-node)
+		    (evil-define-key 'normal neotree-mode-map (kbd "r") 'neotree-rename-node)
+		    (evil-define-key 'normal neotree-mode-map (kbd "c") 'neotree-create-node)))))
+  #+END_SRC
+
+* Clipboard
+  
+  Lets attempt to use a nice little package instead of the code
+  in the next block.
+  #+BEGIN_SRC emacs-lisp
+    (use-package pbcopy
+      :if (and (custom/system-is-mac) (not (display-graphic-p)))
+      :init (turn-on-pbcopy))
+  #+END_SRC
+  
+  Handle clipboard integration in terminal Emacs. We actually
+  need to call out to =pbcopy= and =pbpaste= on macOS ... I
+  can't believe that this is 2017 (as of this writing).
+  #+BEGIN_SRC emacs-lisp
+    ;;(custom/with-operating-system
+    ;; macOS
+    ;; (custom/with-terminal-emacs
+    ;;  (defvar custom/last-copy-to-macOS nil
+    ;;    "The last text that was copied to the system clipboard")
+    ;;  (defun custom/paste-from-macOS ()
+    ;;      (let* (;; Setting default-directory to a directory
+    ;;	     ;; that is sure to exist means that this
+    ;;	     ;; code won't error out even the directory
+    ;;	     ;; for the current buffer no longer exists
+    ;;	     (default-directory "/")
+    ;;	     ;; pbpaste returns clipboard contents as string
+    ;;	     (text (shell-command-to-string "pbpaste")))
+    ;;	;; if this functions returns nil then the system
+    ;;	;; clipboard is ignored and then the first element in
+    ;;	;; the yank ring (which, if the system clipboard has
+    ;;	;; not been modified since the last kill, will be the
+    ;;	;; same) is returned. Including this `unless' clause
+    ;;	;; prevents you from getting the same text yanked the
+    ;;	;; first time you ran `yank-pop'.
+    ;;	(unless (string= text custom/last-copy-to-macOS)
+    ;;	  text)))
+    ;;  (defun custom/copy-to-macOS (text)
+    ;;    (let* (;; Setting default-directory to a directory
+    ;;	   ;; that is sure to exist means that this
+    ;;	   ;; code won't error out even the directory
+    ;;	   ;; for the current buffer no longer exists
+    ;;	   (default-directory "/")
+    ;;	   ;; setting `process-connction-type' makes Emacs
+    ;;	   ;; use a pipe to communicate with `pbcopy' instead
+    ;;	   ;; of a pty (which is overkill).
+    ;;	   (process-connection-type nil)
+    ;;	   ;; The nil argument tells Emacs to discard stdout and
+    ;;	   ;; stderr. Note, we aren't using `call-process' here
+    ;;	   ;; because we want this command to be asynchronous.
+    ;;	   ;;
+    ;;	   ;; Command `pbcopy' writes stdin to the clipboard
+    ;;	   ;; until it receives EOF.
+    ;;	   (proc (start-process "pbcopy" nil "pbcopy")))
+    ;;      (process-send-string proc text)
+    ;;      (process-send-eof proc))
+    ;;    (setq custom/last-copy-to-macOS text))
+    ;;  (setq interprogram-paste-function #'custom/paste-from-macOS)
+    ;;  (setq interprogram-copy-function #'custom/copy-to-macOS)))
+    ;;
+    ;;;; If you have something in the system clipboard and
+    ;;;; then kill something in Emacs, then by default whatever
+    ;;;; you had in the system clipboard is gone and there is
+    ;;;; no way to get it back. Setting the following option
+    ;;;; makes it so that when you kill something in Emacs, whatever
+    ;;;; was in the system clipboard is pushed onto the kill ring.
+    ;;;; That way you can paste it with `yank-pop'.
+    ;;(setq save-interprogram-paste-before-kill t)
+  #+END_SRC
+
+* Org Mode
+  
   #+BEGIN_SRC emacs-lisp
     ;(defface org-block-begin-line
     ;  '((t (:foreground "#008ED1" :background "#990000")))
@@ -468,14 +728,26 @@ borrowed from [[https://github.com/larstvei/dot-emacs][larstvei/dot-emacs]].
       :demand t
       :config
       (progn
-	(setq org-src-fontify-natively t)
-	(setq org-fontify-whole-heading-line t)
 	(add-to-list 'org-structure-template-alist
-		     (list "x" (concat "#+BEGIN_SRC emacs-lisp\n" "?\n" "#+END_SRC")))))
+		     ;; start an elisp block with `<x'
+		     (list "x" (concat "#+BEGIN_SRC emacs-lisp\n" "?\n" "#+END_SRC")))
+	(setq org-src-fontify-natively t
+	      org-fontify-whole-heading-line t
+	      ;; Always indent stars and their respective text and only
+	      ;; use odd star levels to align things a bit cleaner
+	      org-startup-indented t
+	      org-odd-levels-only t
+	      ;; Automatically guess if there should be blanks before
+	      ;; new headings. This can also be set to a boolean.
+	      org-blank-before-new-entry '((heading . auto) (plain-list-item . auto))
+	      ;; amount of spaces before next heading required for org to
+	      ;; show spaces between collapsed headings
+	      org-cycle-separator-lines 0)))
+
   #+END_SRC
 
 * Evil (4 Life)
-
+  
   #+BEGIN_SRC emacs-lisp
     (use-package evil
       :demand t
@@ -485,6 +757,16 @@ borrowed from [[https://github.com/larstvei/dot-emacs][larstvei/dot-emacs]].
       :init
       (progn
 	(setq evil-want-C-i-jump nil)
+
+	; =evil-leader= adds a vim like leader mode to evil. It
+	; must be initialized before evil itself.
+	(use-package evil-leader
+	  :init (global-evil-leader-mode)
+	  :config
+	  (progn
+	    (setq evil-leader/leader "SPC"
+		  evil-leader/in-all-states t)))
+
 	(evil-mode 1)))
 
     (use-package evil-org
@@ -512,8 +794,6 @@ borrowed from [[https://github.com/larstvei/dot-emacs][larstvei/dot-emacs]].
 
 * Javascript
 
-
-
   Setup regular JS2 mode
   #+BEGIN_SRC emacs-lisp
     (use-package js2-mode
@@ -523,9 +803,10 @@ borrowed from [[https://github.com/larstvei/dot-emacs][larstvei/dot-emacs]].
 	(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode)))
 	:config
 	(progn
-	(setq js2-basic-offset 2)
-	(setq js2-strict-trailing-comma-warning nil)
-	(setq js2-strict-missing-semi-warning nil)))
+	  (setq js2-strict-inconsistent-return-warning nil
+		js2-basic-offset 2
+		js2-strict-trailing-comma-warning nil
+		js2-strict-missing-semi-warning nil)))
   #+END_SRC
   
   Experiment with rjsx-mode
@@ -538,6 +819,14 @@ borrowed from [[https://github.com/larstvei/dot-emacs][larstvei/dot-emacs]].
       :init
       (progn
 	(add-to-list 'auto-mode-alist '("\\.js\\'" . rjsx-mode))))
+  #+END_SRC
+  
+  Add JSON support
+  #+BEGIN_SRC emacs-lisp
+    (use-package json-mode
+      :commands json-mode
+      :config (setq-default js-indent-level 2
+			    json-reformat:indent-level 2))
   #+END_SRC
   
   
@@ -553,3 +842,140 @@ borrowed from [[https://github.com/larstvei/dot-emacs][larstvei/dot-emacs]].
 				 "--single-quote"
 				 "--no-semi"))))
   #+END_SRC
+  
+* REST Client
+  
+  Make exploration of REST clients simpler
+  
+  https://github.com/pashky/restclient.el
+  #+BEGIN_SRC emacs-lisp
+    (use-package restclient)
+  #+END_SRC
+  
+* Completion
+
+   
+This package provides a simple mechanism for recording the user's
+command history so that it can be used to sort commands by usage.
+It is automatically used by Ivy. Note, however, that historian.el
+will hopefully replace smex soon, since it provides more
+functionality in a more elegant way. See [1], [2].
+
+[1]: https://github.com/nonsequitur/smex
+[2]: https://github.com/PythonNut/historian.el
+#+BEGIN_SRC emacs-lisp
+  (use-package smex
+    :bind (("M-x" . smex)))
+#+END_SRC
+
+This package provides a framework for sorting choices in a
+hopefully intelligent way based on what the user has typed in,
+using "fuzzy matching" (i.e. "ffap" matches "find-file-at-point").
+See [1].
+
+[1]: https://github.com/lewang/flx
+#+BEGIN_SRC emacs-lisp
+  (use-package flx)
+#+END_SRC
+
+Ivy is a completion and narrowing framework. What does this mean?
+By default, Emacs has some basic tab-completion for commands,
+files, and so on. Ivy replaces this interface by showing a list of
+all the possible options, and narrowing it in an intelligent
+way (using smex and flx, if they are installed) as the user inputs
+a query. This is much faster.
+#+BEGIN_SRC emacs-lisp
+  (use-package ivy
+    :delight (ivy-mode "")
+    :init
+      ;; Use Ivy for `completing-read'.
+      (ivy-mode 1)
+
+      ;; Use fuzzy matching for Ivy, powered by flx, but not for Swiper
+      (setq ivy-re-builders-alist
+          '((t . ivy--regex-fuzzy)))
+
+      ;; Increase the maximum number of candidates that will be sorted
+      ;; using `flx'. The default is 200, which means `flx' is almost
+      ;; never used. Setting it too high (e.g. 10000) causes lag. This
+      ;; seems to be a good compromise (for example, @PythonNut uses it,
+      ;; see [1]).
+      ;;
+      ;; [1]: https://github.com/PythonNut/emacs-config/blob/c8bff5cce293006ec5cdc39a86982431a758a9a0/modules/config-ivy.el#L68
+      (setq ivy-flx-limit 2000))
+#+END_SRC
+
+Ivy is just a general-purpose completion framework. It can be used
+to generate improved versions of many stock Emacs commands. This is
+done by the Counsel library. (It also adds a few new commands, such
+as `counsel-git-grep'.)
+#+BEGIN_SRC emacs-lisp
+  (use-package counsel
+    :bind (;; Use Counsel for common Emacs commands.
+           ("M-x" . counsel-M-x)
+           ("C-x C-f" . counsel-find-file)
+           ("C-h f" . counsel-describe-function)
+           ("C-h v" . counsel-describe-variable)
+           ("C-h l" . counsel-load-library)
+           ("C-h C-l" . counsel-find-library)
+           ("C-h S" . counsel-info-lookup-symbol)
+           ("C-x 8 RET" . counsel-unicode-char)
+  
+           ;; Introduce a few new commands that use Counsel. The
+           ;; bindings are suggested by the README [1].
+           ;;
+           ;; [1]: https://github.com/abo-abo/swiper
+           ("C-c g" . counsel-git)
+           ("C-c j" . counsel-git-grep)
+           ;("C-c k" . counsel-rg)
+  
+           ;; Interactively select a kill to yank using ivy, when using
+           ;; `yank-pop'.
+           ("M-y" . counsel-yank-pop)
+  
+           ;; After you have pressed M-:, you can use C-r to select a
+           ;; previous entry using Counsel.
+           :map read-expression-map
+           ("C-r" . counsel-expression-history))
+    :config
+  
+    ;; If there is a valid file at point, pre-select in C-x C-f.
+    (setq counsel-find-file-at-point t))
+#+END_SRC
+
+Remembers your choices in completion menus.
+#+BEGIN_SRC emacs-lisp
+  (use-package historian
+    :demand t
+    :config
+  
+    ;; Enable the functionality of historian.el.
+    (historian-mode 1))
+#+END_SRC
+
+Uses Historian to sort Ivy candidates by frecency+flx.
+#+BEGIN_SRC emacs-lisp
+  (use-package ivy-historian
+    :after ivy
+    :config
+  
+    ;; Tweak historian weighting settings. These values are chosen
+    ;; subjectively to produce good results.
+    (setq ivy-historian-freq-boost-factor 500)
+    (setq ivy-historian-recent-boost 500)
+    (setq ivy-historian-recent-decrement 50)
+  
+    ;; Enable the functionality of historian-ivy.
+    (ivy-historian-mode 1))
+#+END_SRC
+
+* Projectile
+  
+This package introduces a concept of "projects" and provides
+commands for quick navigation within and between them.
+#+BEGIN_SRC emacs-lisp
+  (use-package projectile
+    :demand t
+    :config
+    (projectile-mode 1))
+#+END_SRC
