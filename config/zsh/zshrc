@@ -1,6 +1,4 @@
-source "$ZDOTDIR/environment.zsh"
 source "$ZDOTDIR/zplug.zsh"
-#source "$ZDOTDIR/prompt.zsh"
 source "$ZDOTDIR/options.zsh"
 source "$ZDOTDIR/keybinds.zsh"
 source "$ZDOTDIR/history.zsh"
