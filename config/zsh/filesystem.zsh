@@ -38,14 +38,14 @@ alias lla="ls -AlhGFp"
 alias llla="ls -alhFp"
 
 # These are global aliases; you can use them anywhere in a command.
-alias -g ...='../..'
-alias -g ....='../../..'
-alias -g .....='../../../..'
-alias -g ......='../../../../..'
-alias -g .......='../../../../../..'
-alias -g ........='../../../../../../..'
-alias -g .........='../../../../../../../..'
-alias -g ..........='../../../../../../../../..'
+alias ...='../..'
+alias ....='../../..'
+alias .....='../../../..'
+alias ......='../../../../..'
+alias .......='../../../../../..'
+alias ........='../../../../../../..'
+alias .........='../../../../../../../..'
+alias ..........='../../../../../../../../..'
 
 # These are some aliases for moving to previously visited directories.
 # The first alias uses "--" so that we can alias "-" without it being
