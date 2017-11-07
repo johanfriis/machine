@@ -1,6 +1,8 @@
 ################
 ### KEYBINDS ###
 ################
+# emacs please
+bindkey -e
 
 # bind arrow up and down to history search
 bindkey "^[[A" history-search-backward
