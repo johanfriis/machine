@@ -9,9 +9,11 @@ bundles=(
     "mafredri/zsh-async, from:github"
     "sindresorhus/pure, use:pure.zsh, from:github, as:theme"
     # Display autosuggestions from history:
-    #"zsh-users/zsh-autosuggestions"
+    "zsh-users/zsh-autosuggestions"
     # Completion definitions for lots of additional commands.
     #"zsh-users/zsh-completions"
+    # load this last so all widgets have been initialized
+    "zsh-users/zsh-syntax-highlighting"
 )
 
 #############################################################

@@ -23,6 +23,7 @@ setopt hist_ignore_space
 
 # All zsh sessions share the same history file. Timestamps are also
 # recorded for each command.
+setopt append_history
 setopt share_history
 
 # Use OS-provided locking mechanisms for the history file, if
@@ -43,7 +44,4 @@ setopt hist_verify
 # keeps out history of commands fresh
 setopt hist_ignore_dups
 setopt hist_expire_dups_first
-
-# Share history between sessions
-setopt share_history # share command history data
 
