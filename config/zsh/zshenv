@@ -1,0 +1,16 @@
+# redefine PATH completely
+PATH=/usr/sbin:/usr/bin:/sbin:/bin
+PATH=/usr/local/sbin:/usr/local/bin:$PATH
+PATH=/usr/local/opt/zplug/bin:$PATH
+
+# split this into a conditional
+PATH=/usr/local/opt/vim/bin:$PATH
+PATH=/usr/local/opt/coreutils/libexec/gnubin:$PATH
+PATH=/usr/local/opt/gnu-sed/libexec/gnubin:$PATH
+
+PATH=$HOME/bin:$PATH
+PATH="$HOME/dev/bin:$HOME/.local/bin:$PATH"
+export PATH
+
+# I prefer vim for quick editing
+export EDITOR=vim
