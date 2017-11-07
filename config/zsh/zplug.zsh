@@ -8,8 +8,6 @@ bundles=(
     # use pure prompt
     "mafredri/zsh-async, from:github"
     "sindresorhus/pure, use:pure.zsh, from:github, as:theme"
-    # Quickly jump to directories:
-    "mfaerevaag/wd, use:wd.sh, rename-to:wd, as:command"
     # Display autosuggestions from history:
     #"zsh-users/zsh-autosuggestions"
     # Completion definitions for lots of additional commands.

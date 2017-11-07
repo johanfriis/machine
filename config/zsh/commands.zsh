@@ -44,8 +44,8 @@ elif (( $+commands[vi] )); then
 fi
 
 ######################################################################
-#### WD
-
-if (( $+commands[wd] )); then
-  alias wd='wd --config ~/.tmp/wdconfig'
+#### FASD
+if (( $+commands[fasd] )); then
+  eval "$(fasd --init auto)"
+  alias j=z
 fi

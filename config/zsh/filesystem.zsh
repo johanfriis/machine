@@ -61,14 +61,6 @@ alias 7='cd -7'
 alias 8='cd -8'
 alias 9='cd -9'
 
-# Enable wd.
-if (( $+commands[wd] )); then
-    function wd {
-        emulate -LR zsh
-        . wd
-    }
-fi
-
 # To complement the previous set of aliases, here is a convenient way
 # to list the last few directories visited, with their numbers. The
 # alias "d", which is used by oh-my-zsh for this purpose, is taken
