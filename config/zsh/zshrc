@@ -1,0 +1,17 @@
+source "$ZDOTDIR/environment.zsh"
+source "$ZDOTDIR/zplug.zsh"
+#source "$ZDOTDIR/prompt.zsh"
+source "$ZDOTDIR/options.zsh"
+source "$ZDOTDIR/keybinds.zsh"
+source "$ZDOTDIR/history.zsh"
+source "$ZDOTDIR/completion.zsh"
+source "$ZDOTDIR/filesystem.zsh"
+source "$ZDOTDIR/commands.zsh"
+source "$ZDOTDIR/git.zsh"
+#source "$ZDOTDIR/man.zsh"
+source "$ZDOTDIR/misc.zsh"
+source "$ZDOTDIR/alias.zsh"
+
+if [[ -f $HOME/.zshrc.local.zsh ]]; then
+	source "$HOME/.zshrc.local.zsh"
+fi

@@ -5,6 +5,9 @@
 #### Define default bundle list
 
 bundles=(
+    # use pure prompt
+    "mafredri/zsh-async, from:github"
+    "sindresorhus/pure, use:pure.zsh, from:github, as:theme"
     # Quickly jump to directories:
     "mfaerevaag/wd, use:wd.sh, rename-to:wd, as:command"
     # Display autosuggestions from history:
@@ -39,8 +42,8 @@ function remove_bundle() {
 #############################################################
 #### Load local customizations
 
-if [[ -f ~/.zsh/zplug.local.zsh ]]; then
-    . ~/.zsh/zplug.local.zsh
+if [[ -f $ZDOTDIR/zplug.local.zsh ]]; then
+    . $ZDOTDIR/zplug.local.zsh
 fi
 
 #############################################################
