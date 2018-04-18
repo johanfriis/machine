@@ -6,7 +6,6 @@ if (( $+commands[git] )); then
     alias g=git
 
     alias gh='git help'
-
     alias gi='git init'
 
     alias gs='git status'
@@ -409,6 +408,17 @@ if (( $+commands[git] )); then
     alias gpff='git push --force'
     alias gpu='git push --set-upstream'
     alias gpd='git push --delete'
+fi
+
+##################
+### GIT EXTRAS ###
+##################
+
+# Little extra git utilities [1]
+#
+# [1]: https://github.com/tj/git-extras
+if (( $+commands[git-extras] )); then
+  alias gI='git ignore'
 fi
 
 ###########

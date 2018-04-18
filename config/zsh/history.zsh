@@ -42,6 +42,15 @@ setopt hist_verify
 # When saving commands, ignore duplicates, and if a duplicate
 # entry is set to be added, remove the previous instance. This
 # keeps out history of commands fresh
-setopt hist_ignore_dups
+
+# When trimming history file, remove duplicates first.
 setopt hist_expire_dups_first
 
+# Don't add a command to history if the previous one was the same
+setopt hist_ignore_dups 
+
+# This will remove all duplicates from the list starting with the
+# oldest. We don't want this as it will give an incomplete picture
+# of the commands being used and their sequence
+# setop hist_ignore_all_dups
+# setop hist_save_no_dups

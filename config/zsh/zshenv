@@ -14,3 +14,7 @@ export PATH
 
 # I prefer vim for quick editing
 export EDITOR=vim
+
+if [[ -f $HOME/.zshenv.local.zsh ]]; then
+  source "$HOME/.zshenv.local.zsh"
+fi

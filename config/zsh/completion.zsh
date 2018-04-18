@@ -26,3 +26,6 @@ bindkey '^[[Z' reverse-menu-complete
 #
 # [1]: http://unix.stackexchange.com/q/330481/176805
 zstyle ':completion:*' matcher-list 'l:|=* r:|=* m:{a-z\-}={A-Z\_}'
+
+# allow completion of . and ..
+zstyle ':completion:*' special-dirs true

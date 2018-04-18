@@ -23,3 +23,6 @@ setopt glob_dots
 # Sort numeric filenames numerically, instead of lexicographically.
 setopt numeric_glob_sort
 
+# add slashes to directory completions
+setopt autoparamslash
+
