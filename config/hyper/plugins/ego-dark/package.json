@@ -1,0 +1,19 @@
+{
+  "name": "ego-dark",
+  "version": "1.0.0",
+  "description": "Colour scheme for Hyper (hyper.is)",
+  "main": "index.js",
+  "keywords": [
+    "hyper",
+    "hyperterm",
+    "spacemacs",
+    "colours",
+    "color",
+    "theme",
+    "dark",
+    "purple",
+    "blue",
+    "vibrancy"
+  ],
+  "license": "MIT"
+}
