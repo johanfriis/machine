@@ -5,13 +5,11 @@
 ## autoload compinit, but place it's cache
 ## file in our .tmp file if it exists
 autoload -U compinit
-compinit -i
-## at the moment this is not working, so disable
-#if [[ -d "$HOME/.tmp" ]]; then
-#  compinit -i -d "$HOME/.tmp/zcompdump"
-#else
-#  compinit -i
-#fi
+if [[ -d "$HOME/.tmp" ]]; then
+ compinit -i -d "$HOME/.tmp/zcompdump"
+else
+ compinit -i
+fi
 
 # For ambiguous completions, use an interactive menu (which can be
 # escaped with C-g) instead of overwriting the current command.
