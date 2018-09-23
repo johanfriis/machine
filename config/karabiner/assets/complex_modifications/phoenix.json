@@ -1,0 +1,24 @@
+{
+  "title": "Phoenix mappings",
+  "rules": [
+    {
+      "description":
+        "System: Map Right Command to Left Command + Left Control + Left Option",
+      "manipulators": [
+        {
+          "from": {
+            "key_code": "right_gui"
+          },
+          "to": [
+            {
+              "key_code": "left_gui",
+              "modifiers": ["left_control", "left_option"],
+              "lazy": true
+            }
+          ],
+          "type": "basic"
+        }
+      ]
+    }
+  ]
+}
