@@ -11,3 +11,5 @@ alias drun='docker run -u $(id -u):$(id -g) -v ~/.drun:/drun -e HOME=/drun -v `p
 alias dev="yarn run dev"
 alias build="yarn run build"
 
+alias ag="rg"
+alias kill="fkill"
