@@ -2,6 +2,7 @@
 ### COMPLETION ###
 ##################
 
+
 ## autoload compinit, but place it's cache
 ## file in our .tmp file if it exists
 autoload -U compinit
@@ -13,7 +14,7 @@ fi
 
 # For ambiguous completions, use an interactive menu (which can be
 # escaped with C-g) instead of overwriting the current command.
-zstyle ':completion:*' menu select
+zstyle ':completion:*' menu select=2
 
 # Allow usage of shift-tab (backtab) to go backward in the completion
 # menu.
@@ -23,7 +24,10 @@ bindkey '^[[Z' reverse-menu-complete
 # completions literally all day. See [1]. (Why is zsh so hard? Sigh.)
 #
 # [1]: http://unix.stackexchange.com/q/330481/176805
-zstyle ':completion:*' matcher-list 'l:|=* r:|=* m:{a-z\-}={A-Z\_}'
+#zstyle ':completion:*' matcher-list 'l:|=* r:|=* m:{a-z\-}={A-Z\_}'
 
 # allow completion of . and ..
 zstyle ':completion:*' special-dirs true
+
+COMPLETION_COLORS='ma=01;32:no=1;1:di=1;1'
+zstyle ':completion:*' list-colors ${(s.:.)COMPLETION_COLORS}
