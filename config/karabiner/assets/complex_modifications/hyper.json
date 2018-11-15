@@ -45,7 +45,28 @@
               "modifiers": ["left_shift"]
             }
           ]
-        }
+        },
+        {
+          "type": "basic",
+          "conditions": [
+            {
+              "type": "frontmost_application_if",
+              "bundle_identifiers": ["^co\\.zeit\\.hyper$"]
+            }
+          ],
+          "from": {
+            "key_code": "g",
+            "modifiers": {
+              "mandatory": ["right_control", "right_shift"]
+            }
+          },
+          "to": [
+            {
+              "key_code": "g",
+              "modifiers": ["left_control"]
+            }
+          ]
+        },
       ]
     }
   ]
