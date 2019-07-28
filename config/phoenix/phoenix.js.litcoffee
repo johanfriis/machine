@@ -2,154 +2,154 @@
 
 ## The config Proper begins here
 
-    Phoenix.notify "Phoenix config loading"
+  Phoenix.notify "Phoenix config loading"
 
-    Phoenix.set
-        daemon: true
-        openAtLogin: true
+  Phoenix.set
+    daemon: true
+    openAtLogin: true
 
 ## Constants
 
-    MARGIN_X = 12
-    MARGIN_Y = 12
-    GRID_WIDTH = 20
-    GRID_HEIGHT = 16
+  MARGIN_X = 12
+  MARGIN_Y = 12
+  GRID_WIDTH = 20
+  GRID_HEIGHT = 16
 
 ## Helpers
 
-    _.mixin
-        flatmap: (list, iteratee) ->
-            _.flatten _.map(list, iteratee)
+  _.mixin
+    flatmap: (list, iteratee) ->
+      _.flatten _.map(list, iteratee)
 
-    debug = (o, label="obj: ") ->
-        str = if o then JSON.stringify(o, undefined, 2) || o.toString() else o
-        Phoenix.log str
+  debug = (o, label="obj: ") ->
+    str = if o then JSON.stringify(o, undefined, 2) || o.toString() else o
+    Phoenix.log str
 
-    focused = -> Window.focused()
+  focused = -> Window.focused()
 
-    Window::screenRect = (screen) -> screen?.flippedVisibleFrame() || @screen().flippedVisibleFrame()
-    Window::fullGridFrame = -> @calculateGrid x: 0, y: 0, width: 1, height: 1
+  Window::screenRect = (screen) -> screen?.flippedVisibleFrame() || @screen().flippedVisibleFrame()
+  Window::fullGridFrame = -> @calculateGrid x: 0, y: 0, width: 1, height: 1
 
 ## Window Grid
 
 Calculate grid based on parameters
 
-    Window::calculateGrid = ({x, y, width, height}) ->
-        rect = @screenRect()
-        {
-            y: Math.round(y * rect.height) + MARGIN_Y + rect.y,
-            x: Math.round(x * rect.width) + MARGIN_X + rect.x,
-            width: Math.round(width * rect.width) - 2.0 * MARGIN_X,
-            height: Math.round(height * rect.height) - 2.0 * MARGIN_Y,
-        }
+  Window::calculateGrid = ({x, y, width, height}) ->
+    rect = @screenRect()
+    {
+      y: Math.round(y * rect.height) + MARGIN_Y + rect.y,
+      x: Math.round(x * rect.width) + MARGIN_X + rect.x,
+      width: Math.round(width * rect.width) - 2.0 * MARGIN_X,
+      height: Math.round(height * rect.height) - 2.0 * MARGIN_Y,
+    }
 
 Window left half width
 
-    Window::proportionWidth = ->
-        sw = @screenRect().width
-        ww = @frame().width
-        Math.round((ww/sw)*10)/10
+  Window::proportionWidth = ->
+    sw = @screenRect().width
+    ww = @frame().width
+    Math.round((ww/sw)*10)/10
 
 Window to grid
 
-    Window::toGrid = ({x, y, width, height}) ->
-        rect = @calculateGrid {x, y, width, height}
-        @setFrame rect
+  Window::toGrid = ({x, y, width, height}) ->
+    rect = @calculateGrid {x, y, width, height}
+    @setFrame rect
 
 ## Window moving and sizing
 
-    Window::togglingWidth = ->
-        0.5
-        #switch @proportionWidth()
-        #    when 0.8 then 0.5
-        #    when 0.5 then 0.3
-        #    else 0.8
+  Window::togglingWidth = ->
+    0.5
+  #switch @proportionWidth()
+  #    when 0.8 then 0.5
+  #    when 0.5 then 0.3
+  #    else 0.8
 
-    Window::toLeftToggle = -> @toGrid x: 0, y: 0, width: @togglingWidth(), height: 1
-    Window::toRightToggle = -> @toGrid x: 1 - @togglingWidth(), y: 0, width: @togglingWidth(), height: 1
+  Window::toLeftToggle = -> @toGrid x: 0, y: 0, width: @togglingWidth(), height: 1
+  Window::toRightToggle = -> @toGrid x: 1 - @togglingWidth(), y: 0, width: @togglingWidth(), height: 1
 
-    lastFrames = {}
+  lastFrames = {}
 
-    Window::rememberFrame = -> lastFrames[@hash()] = @frame()
-    Window::forgetFrame = -> delete lastFrames[@hash()]
+  Window::rememberFrame = -> lastFrames[@hash()] = @frame()
+  Window::forgetFrame = -> delete lastFrames[@hash()]
 
-    Window::toggleFullScreen = ->
-        unless _.isEqual @frame(), @fullGridFrame()
-            @rememberFrame()
-            @toGrid x: 0, y: 0, width: 1, height: 1
-        else if lastFrames[@hash()]
-            @setFrame lastFrames[@hash()]
-            @forgetFrame()
+  Window::toggleFullScreen = ->
+    unless _.isEqual @frame(), @fullGridFrame()
+      @rememberFrame()
+      @toGrid x: 0, y: 0, width: 1, height: 1
+    else if lastFrames[@hash()]
+      @setFrame lastFrames[@hash()]
+      @forgetFrame()
 
-    Window::center = (gridWidth, gridHeight) ->
-        rect = @screenRect()
-        current = @frame()
+  Window::center = (gridWidth, gridHeight) ->
+    rect = @screenRect()
+    current = @frame()
 
-        if gridWidth and gridHeight
-            grid = @calculateGrid x: 0, y: 0, width: gridWidth, height: gridHeight
-        else
-            grid = width: current.width, height: current.height
+    if gridWidth and gridHeight
+      grid = @calculateGrid x: 0, y: 0, width: gridWidth, height: gridHeight
+    else
+      grid = width: current.width, height: current.height
 
-        frame =
-            x: (rect.width / 2) - (grid.width / 2)
-            y: (rect.height / 2) - (grid.height / 2)
-            width: grid.width
-            height: grid.height
+    frame =
+      x: (rect.width / 2) - (grid.width / 2)
+      y: (rect.height / 2) - (grid.height / 2)
+      width: grid.width
+      height: grid.height
 
-        unless _.isEqual frame, current
-            @rememberFrame()
-            @setFrame frame
-        else if lastFrames[@hash()]
-            @setFrame lastFrames[@hash()]
-            @forgetFrame()
+    unless _.isEqual frame, current
+      @rememberFrame()
+      @setFrame frame
+    else if lastFrames[@hash()]
+      @setFrame lastFrames[@hash()]
+      @forgetFrame()
 
-    Window::pin = () ->
-        allSpaces = Space.all()
-        if @spaces().length == Space.all().length
-            Space.all().map (s) =>
-                s.removeWindows [this] unless s.isEqual Space.active()
-        else
-            Space.all().map (s) => s.addWindows [this]
+  Window::pin = () ->
+    allSpaces = Space.all()
+    if @spaces().length == Space.all().length
+      Space.all().map (s) =>
+        s.removeWindows [this] unless s.isEqual Space.active()
+    else
+      Space.all().map (s) => s.addWindows [this]
 
 ## Applications
 
-    App.focusOrLaunch = (application) ->
-        unless _.isArray application
-            application = [application, application]
-        [findName, launchName] = application
-        app = App.get(findName)
-        if app
-            app.focus()
-        else
-            Phoenix.notify "Launching #{launchName}"
-            App.launch launchName
+  App.focusOrLaunch = (application) ->
+    unless _.isArray application
+      application = [application, application]
+    [findName, launchName] = application
+    app = App.get(findName)
+    if app
+      app.focus()
+    else
+      Phoenix.notify "Launching #{launchName}"
+      App.launch launchName
 
 ## Bindings
 
 Alias Phoenix.bind as key_binding to increase readability
 
-    keys = []
+  keys = []
 
 The key_binding method includes the unused description parameter, for potential future help use
 
-    key_binding = (key, description, modifier, fn) -> keys.push Key.on(key, modifier, fn)
+  key_binding = (key, description, modifier, fn) -> keys.push Key.on(key, modifier, fn)
 
-    mash = ['cmd', 'ctrl', 'shift']
+  mash = ['cmd', 'ctrl', 'shift']
 
 Move the current window to top/right/bottom/left half of screen and fill it
 
-    key_binding 'a', 'Left side toggle', mash, -> focused().toLeftToggle()
-    key_binding 'd', 'Right side toggle', mash, -> focused().toRightToggle()
-    key_binding 'space', 'Maximize Window', mash, -> focused().toggleFullScreen()
-    key_binding 'f', 'Fullscreen Window', mash, -> focused().setFullScreen(!focused().isFullScreen())
+  key_binding 'a', 'Left side toggle', mash, -> focused().toLeftToggle()
+  key_binding 'd', 'Right side toggle', mash, -> focused().toRightToggle()
+  key_binding 'space', 'Maximize Window', mash, -> focused().toggleFullScreen()
+  key_binding 'f', 'Fullscreen Window', mash, -> focused().setFullScreen(!focused().isFullScreen())
 
-    key_binding 's', 'Center Window', mash, -> focused().center()
-    key_binding 'x', 'Center Window 85%', mash, -> focused().center(0.85, 0.85)
-    key_binding 'p', 'Pin Window', mash, -> focused().pin()
+  key_binding 's', 'Center Window', mash, -> focused().center()
+  key_binding 'x', 'Center Window 85%', mash, -> focused().center(0.85, 0.85)
+  key_binding 'p', 'Pin Window', mash, -> focused().pin()
 
 
-    #key_binding 'q', 'Launch VS Code', mash, -> App.focusOrLaunch ["Code", "Visual Studio Code"]
-    #key_binding 'w', 'Launch Hyper', mash, -> App.focusOrLaunch "Hyper"
-    #key_binding 'e', 'Launch Franz', mash, -> App.focusOrLaunch "Franz"
+  #key_binding 'q', 'Launch VS Code', mash, -> App.focusOrLaunch ["Code", "Visual Studio Code"]
+  #key_binding 'w', 'Launch Hyper', mash, -> App.focusOrLaunch "Hyper"
+  #key_binding 'e', 'Launch Franz', mash, -> App.focusOrLaunch "Franz"
 
-    Phoenix.notify "Loaded"
+  Phoenix.notify "Loaded"
