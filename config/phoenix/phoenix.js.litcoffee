@@ -111,6 +111,14 @@ Window to grid
     else
       Space.all().map (s) => s.addWindows [this]
 
+  Window::moveToSpace = (spaceIdx) ->
+    currentSpace = Space.active()
+    allSpaces = Space.all()
+    unless (spaceIdx < 0 or spaceIdx > allSpaces.length) or allSpaces[spaceIdx].isEqual currentSpace
+      @spaces().map (s) =>
+        s.removeWindows [this]
+      allSpaces[spaceIdx].addWindows [this]
+
 ## Applications
 
   App.focusOrLaunch = (application) ->
@@ -134,7 +142,8 @@ The key_binding method includes the unused description parameter, for potential 
 
   key_binding = (key, description, modifier, fn) -> keys.push Key.on(key, modifier, fn)
 
-  mash = ['cmd', 'ctrl', 'shift']
+  mash = ['cmd', ]
+  megamash = ['alt', 'ctrl', 'shift' ]
 
 Move the current window to top/right/bottom/left half of screen and fill it
 
@@ -147,6 +156,15 @@ Move the current window to top/right/bottom/left half of screen and fill it
   key_binding 'x', 'Center Window 85%', mash, -> focused().center(0.85, 0.85)
   key_binding 'p', 'Pin Window', mash, -> focused().pin()
 
+  key_binding '1', 'Move window to Space 1', megamash, -> focused().moveToSpace(0)
+  key_binding '2', 'Move window to Space 2', megamash, -> focused().moveToSpace(1)
+  key_binding '3', 'Move window to Space 3', megamash, -> focused().moveToSpace(2)
+  key_binding '4', 'Move window to Space 4', megamash, -> focused().moveToSpace(3)
+  key_binding '5', 'Move window to Space 5', megamash, -> focused().moveToSpace(4)
+  key_binding '6', 'Move window to Space 6', megamash, -> focused().moveToSpace(5)
+  key_binding '7', 'Move window to Space 7', megamash, -> focused().moveToSpace(6)
+  key_binding '8', 'Move window to Space 8', megamash, -> focused().moveToSpace(7)
+  key_binding '9', 'Move window to Space 9', megamash, -> focused().moveToSpace(8)
 
   #key_binding 'q', 'Launch VS Code', mash, -> App.focusOrLaunch ["Code", "Visual Studio Code"]
   #key_binding 'w', 'Launch Hyper', mash, -> App.focusOrLaunch "Hyper"
