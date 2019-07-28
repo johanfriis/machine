@@ -10,3 +10,5 @@ config/emacsenv.d/radian
 config/emacsenv.d/prelude
 config/emacsenv.d/spacemacs
 config/emacsenv.d/doom
+.idea
+*.iml
