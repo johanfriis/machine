@@ -31,7 +31,7 @@ setopt chaselinks
 ## -A : --almost-all
 ## -F : --classify
 
-alias ls="ls --color=always"
+alias ls="ls --color=always --group-directories-first"
 alias ll="ls -1pF"
 alias lls="ls -lhGp"
 alias lla="ls -AlhGFp"

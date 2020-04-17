@@ -24,7 +24,9 @@ setopt hist_ignore_space
 # All zsh sessions share the same history file. Timestamps are also
 # recorded for each command.
 setopt append_history
-setopt share_history
+#setopt share_history
+setopt noshare_history
+setopt noextendedhistory
 
 # Use OS-provided locking mechanisms for the history file, if
 # available. The manual says this might improve performance and
@@ -52,5 +54,5 @@ setopt hist_ignore_dups
 # This will remove all duplicates from the list starting with the
 # oldest. We don't want this as it will give an incomplete picture
 # of the commands being used and their sequence
-# setop hist_ignore_all_dups
-# setop hist_save_no_dups
+setopt hist_ignore_all_dups
+setopt hist_save_no_dups

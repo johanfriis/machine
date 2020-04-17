@@ -1,0 +1,11 @@
+#/bin/zsh
+
+if [[ ! -f $HISTFILE ]]; then
+  echo No \$HISTFILE
+  exit 0
+fi
+
+# TODO: escape characters interpreted by sed (like @)
+#sed -i "/^$*$/d" $HOME/Desktop/histfiletest
+
+echo Deleted: "$*"

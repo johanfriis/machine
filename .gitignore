@@ -12,3 +12,4 @@ config/emacsenv.d/spacemacs
 config/emacsenv.d/doom
 .idea
 *.iml
+config/zsh/.zcompdump

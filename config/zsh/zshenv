@@ -9,11 +9,18 @@ PATH=/usr/local/opt/coreutils/libexec/gnubin:$PATH
 PATH=/usr/local/opt/gnu-sed/libexec/gnubin:$PATH
 
 PATH=$HOME/bin:$PATH
-PATH="$HOME/dev/bin:$HOME/.local/bin:$PATH"
+PATH="$HOME/.local/bin:$PATH"
 export PATH
 
 # I prefer vim for quick editing
 export EDITOR=vim
+
+# configure LESS
+export PAGER=less
+# X: don't clear screen 
+# F: quit if one screen is enough
+# S: don't truncate lines
+export LESS="-XFS"
 
 if [[ -f $HOME/.zshenv.local.zsh ]]; then
   source "$HOME/.zshenv.local.zsh"

@@ -7,3 +7,4 @@ set clipboard=unnamed,ideaput,autoselect,exclude:cons\|linux
 
 map \p :action ReformatWithPrettierAction<CR>
 map \r :action Refactorings.QuickListPopupAction<CR>
+set ideajoin

@@ -142,7 +142,7 @@ The key_binding method includes the unused description parameter, for potential 
 
   key_binding = (key, description, modifier, fn) -> keys.push Key.on(key, modifier, fn)
 
-  mash = ['cmd', ]
+  mash = [ 'cmd', 'ctrl', 'shift' ]
   megamash = ['alt', 'ctrl', 'shift' ]
 
 Move the current window to top/right/bottom/left half of screen and fill it

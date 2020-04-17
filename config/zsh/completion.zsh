@@ -2,6 +2,11 @@
 ### COMPLETION ###
 ##################
 
+## load homebrew completion files
+if type brew &>/dev/null; then
+  fpath=(/usr/local/share/zsh-completions $fpath)
+  FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
+fi
 
 ## autoload compinit, but place it's cache
 ## file in our .tmp file if it exists
