@@ -32,7 +32,7 @@ setopt chaselinks
 ## -F : --classify
 
 alias ls="ls --color=always --group-directories-first"
-alias ll="ls -1pF"
+alias ll="ls -1lpF"
 alias lls="ls -lhGp"
 alias lla="ls -AlhGFp"
 alias llla="ls -alhFp"

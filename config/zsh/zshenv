@@ -22,6 +22,8 @@ export PAGER=less
 # S: don't truncate lines
 export LESS="-XFS"
 
+export GOKU_EDN_CONFIG_FILE="$HOME/.config/karabiner/karabiner.edn"
+
 if [[ -f $HOME/.zshenv.local.zsh ]]; then
   source "$HOME/.zshenv.local.zsh"
 fi
