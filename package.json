@@ -5,6 +5,6 @@
       "ln -is $PWD/config/phoenix/phoenix.js.litcoffee ~/.phoenix.js",
     "install:hyper":
       "ln -is $PWD/config/hyper/hyper.js ~/.hyper.js && ln -is $PWD/config/hyper/plugins/* ~/.hyper_plugins/local/",
-    "install:vim": "ln -is $PWD/config/vimrc ~/.vimrc"
+    "install:vim": "ln -is $PWD/config/vimrc ~/.vimrc && ln -is $PWD/config/vim ~/.vim "
   }
 }

@@ -17,3 +17,4 @@ config/vim/.netrwhist
 tools/menubar/node_modules
 config/karabiner/automatic_backups
 .DS_Store
+config/karabiner/examples
