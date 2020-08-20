@@ -18,3 +18,4 @@ tools/menubar/node_modules
 config/karabiner/automatic_backups
 .DS_Store
 config/karabiner/examples
+config/karabiner/karabiner.json
