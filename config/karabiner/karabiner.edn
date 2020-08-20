@@ -1,0 +1,84 @@
+{:profiles {:Pentatonic   {:default true}
+            :Training {}
+            :Simple   {}}
+
+ :tos      {:caps-lock-keyboard {:key  :left_command
+                                 :modi [:left_control :left_option :left_shift]
+                                 :lazy true}}
+
+ :main     [{:des   "Hyper Caps Lock: HJKL Arrow Keys"
+             :rules [:Simple
+                     [:##caps_lock :caps-lock-keyboard]
+                     [:!!h :left_arrow]
+                     [:!!l :right_arrow]
+                     [:!!j :down_arrow]
+                     [:!!k :up_arrow]]}
+
+            {:des   "Hyper Caps Lock: Ctrl Mappings"
+             :rules [:Simple
+                     [:!!a :!Ta]
+                     [:!!e :!Te]
+                     [:!!w :!Tw]
+                     [:!!d :!Td]
+                     [:!!r :!Tr]
+                     [:!!x :!Tx]
+                     [:!!f :!Tf]
+                     [:!!b :!Tb]
+                     [:!!c :!Tc]
+                     [:!!v :!Tv]
+                     [:!!o :!To]
+                     [:!!tab :!Ttab]]}
+
+            {:des   "Block left handed shift with left handed key"
+             :rules [:Training
+                     [:!Sgrave_accent_and_tilde :vk_none]
+                     [:!S1 :vk_none]
+                     [:!S2 :vk_none]
+                     [:!S3 :vk_none]
+                     [:!S4 :vk_none]
+                     [:!S5 :vk_none]
+                     [:!S1 :vk_none]
+                     [:!Sw :vk_none]
+                     [:!Se :vk_none]
+                     [:!Sr :vk_none]
+                     [:!St :vk_none]
+                     [:!Sa :vk_none]
+                     [:!Ss :vk_none]
+                     [:!Sd :vk_none]
+                     [:!Sf :vk_none]
+                     [:!Sg :vk_none]
+                     [:!Sz :vk_none]
+                     [:!Sx :vk_none]
+                     [:!Sc :vk_none]
+                     [:!Sv :vk_none]
+                     [:!Sc :vk_none]
+                     [:!Sc :vk_none]]}
+
+
+            {:des   "Block right handed Shift with right handed key"
+             :rules [:Training
+                     [:!R7 :vk_none]
+                     [:!R8 :vk_none]
+                     [:!R9 :vk_none]
+                     [:!R0 :vk_none]
+                     [:!Rhyphen :vk_none]
+                     [:!Requal_sign :vk_none]
+                     [:!Ry :vk_none]
+                     [:!Ru :vk_none]
+                     [:!Ri :vk_none]
+                     [:!Ro :vk_none]
+                     [:!Rp :vk_none]
+                     [:!Ropen_bracket :vk_none]
+                     [:!Rclose_bracket :vk_none]
+                     [:!Rh :vk_none]
+                     [:!Rj :vk_none]
+                     [:!Rk :vk_none]
+                     [:!Rl :vk_none]
+                     [:!Rsemicolon :vk_none]
+                     [:!Rquote :vk_none]
+                     [:!Rbackslash :vk_none]
+                     [:!Rn :vk_none]
+                     [:!Rm :vk_none]
+                     [:!Rcomma :vk_none]
+                     [:!Rperiod :vk_none]
+                     [:!Rslash :vk_none]]}]}
