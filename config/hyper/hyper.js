@@ -1,4 +1,4 @@
-// Future versions of Hyper may add additional config options,
+// future versions of hyper may add additional config options,
 // which will not automatically be merged into this file.
 // See https://hyper.is#cfg for all currently supported options.
 
@@ -9,11 +9,11 @@ module.exports = {
     updateChannel: 'stable',
 
     // default font size in pixels for all tabs
-    fontSize: 12,
+    fontSize: 14,
 
     // font family with optional fallbacks
-    fontFamily:
-      '"Fira Code", Menlo, "DejaVu Sans Mono", Consolas, "Lucida Console", monospace',
+    fontFamily: '"FiraCode Nerd Font"',
+    uiFontFamily: 'BlinkMacSystemFont',
 
     // default font weight: 'normal' or 'bold'
     fontWeight: 'normal',
@@ -21,11 +21,17 @@ module.exports = {
     // font weight for bold characters: 'normal' or 'bold'
     fontWeightBold: 'bold',
 
+    // line height as a relative unit
+    lineHeight: 1,
+
+    // letter spacing as a relative unit
+    letterSpacing: 0,
+
     // terminal cursor background color and opacity (hex, rgb, hsl, hsv, hwb or cmyk)
-    cursorColor: 'hsl(45, 80%, 50%)',
+    cursorColor: 'hsla(62, 74%, 86%, 0.75)',
 
     // terminal text color under BLOCK cursor
-    cursorAccentColor: '#000',
+    cursorAccentColor: 'hsl(0, 0%, 0%)',
 
     // `'BEAM'` for |, `'UNDERLINE'` for _, `'BLOCK'` for █
     cursorShape: 'BLOCK',
@@ -34,23 +40,25 @@ module.exports = {
     cursorBlink: false,
 
     // color of the text
-    foregroundColor: '#fff',
+    foregroundColor: '#f8f5ed',
 
     // terminal background color
     // opacity is only supported on macOS
-    backgroundColor: 'hsla(120, 0%, 0%, 0.6)',
+    backgroundColor: 'hsla(106, 0%, 23%, 1)',
 
     // terminal selection color
-    selectionColor: 'rgba(248,28,229,0.3)',
+    selectionColor: 'hsl(106, 10%, 15%)',
+    // selectionColor: 'hsla(38, 84%, 91%, 0.10)',
+    // selectionColor: 'hsla(106, 0%, 15%, 0.25)',
 
     // border color (window, tabs)
-    borderColor: '#333',
+    borderColor: 'hsl(106, 0%, 47%)',
 
     // custom CSS to embed in the main window
-    css: '',
+    css: ``,
 
     // custom CSS to embed in the terminal window
-    termCSS: ` `,
+    termCSS: '',
 
     // if you're using a Linux setup which show native menus, set to false
     // default: `true` on Linux, `true` on Windows, ignored on macOS
@@ -62,28 +70,28 @@ module.exports = {
     showWindowControls: '',
 
     // custom padding (CSS format, i.e.: `top right bottom left`)
-    padding: '12px 14px',
+    padding: '22px 24px',
 
     // the full list. if you're going to provide the full color palette,
     // including the 6 x 6 color cubes and the grayscale map, just provide
     // an array here instead of a color map object
     colors: {
-      black: '#000000',
-      red: '#C51E14',
-      green: '#1DC121',
-      yellow: '#C7C329',
-      blue: '#0A2FC4',
-      magenta: '#C839C5',
-      cyan: '#20C5C6',
-      white: '#C7C7C7',
-      lightBlack: '#686868',
-      lightRed: '#FD6F6B',
-      lightGreen: '#67F86F',
-      lightYellow: '#FFFA72',
-      lightBlue: '#6A76FB',
-      lightMagenta: '#FD7CFC',
-      lightCyan: '#68FDFE',
-      lightWhite: '#FFFFFF',
+      black: 'hsl(106, 0%, 31%)',
+      red: 'hsl(360, 50%, 76%)',
+      green: 'hsl(128, 18%, 61%)',
+      yellow: 'hsl(37, 58%, 82%)',
+      blue: 'hsl(198, 100%, 87%)',
+      magenta: 'hsl(302, 30%, 66%)',
+      cyan: 'hsl(194, 100%, 85%)',
+      white: 'hsl(55, 55%, 90%)',
+      lightBlack: 'hsl(106, 0%, 50%)',
+      lightRed: 'hsl(360, 63%, 81%)',
+      lightGreen: 'hsl(76, 69%, 72%)',
+      lightYellow: 'hsl(61, 74%, 77%)',
+      lightBlue: 'hsl(205, 46%, 56%)',
+      lightMagenta: 'hsl(332, 39%, 81%)',
+      lightCyan: 'hsl(182, 53%, 69%)',
+      lightWhite: 'hsl(42, 50%, 95%)',
     },
 
     // the shell to run when spawning a new session (i.e. /usr/local/bin/fish)
@@ -108,7 +116,7 @@ module.exports = {
     env: {},
 
     // set to `false` for no bell
-    bell: 'SOUND',
+    bell: false,
 
     // if `true` (without backticks and without quotes), selected text will automatically be copied to the clipboard
     copyOnSelect: true,
@@ -118,26 +126,40 @@ module.exports = {
 
     // if `true` (without backticks and without quotes), on right click selected text will be copied or pasted if no
     // selection is present (`true` by default on Windows and disables the context menu feature)
-    // quickEdit: true,
+    quickEdit: false,
+
+    // choose either `'vertical'`, if you want the column mode when Option key is hold during selection (Default)
+    // or `'force'`, if you want to force selection regardless of whether the terminal is in mouse events mode
+    // (inside tmux or vim with mouse mode enabled for example).
+    macOptionSelectionMode: 'vertical',
 
     // URL to custom bell
     // bellSoundURL: 'http://example.com/bell.mp3',
 
-    // for advanced config flags please refer to https://hyper.is/#cfg
+    // Whether to use the WebGL renderer. Set it to false to use canvas-based
+    // rendering (slower, but supports transparent backgrounds)
+    webGLRenderer: true,
+
+    // The number of rows to be persisted in terminal buffer for scrolling
+    scrollback: 100000,
+
+// for advanced config flags please refer to https://hyper.is/#cfg
   },
 
-  // a list of plugins to fetch and install from npm
-  // format: [@org/]project[#version]
-  // examples:
-  //   `hyperpower`
-  //   `@company/project`
-  //   `project#1.0.1`
-  plugins: [],
+// a list of plugins to fetch and install from npm
+// format: [@org/]project[#version]
+// examples:
+//   `hyperpower`
+//   `@company/project`
+//   `project#1.0.1`
+  plugins: [
+    'hyper-hide-scroll'
+  ],
 
   // in development, you can create a directory under
   // `~/.hyper_plugins/local/` and include it here
   // to load it and avoid it being `npm install`ed
-  localPlugins: ['ego-dark'],
+  localPlugins: [],
 
   keymaps: {
     // Example
