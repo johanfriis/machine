@@ -2,32 +2,42 @@
             :Training {}
             :Simple   {}}
 
- :tos      {:caps-lock-keyboard {:key  :left_command
-                                 :modi [:left_control :left_option :left_shift]
+ :applications {:Hyper ["^co\\.zeit\\.hyper$"]}
+
+ :tos      {:key-smash {:key  :right_command
+                                 :modi [:right_control :right_option :right_shift]
                                  :lazy true}}
 
- :main     [{:des   "Hyper Caps Lock: HJKL Arrow Keys"
+ :main     [{:des   "SMASH Caps Lock: HJKL Arrow Keys"
              :rules [:Simple
-                     [:##caps_lock :caps-lock-keyboard]
-                     [:!!h :left_arrow]
-                     [:!!l :right_arrow]
-                     [:!!j :down_arrow]
-                     [:!!k :up_arrow]]}
+                     [:##caps_lock :key-smash]
+                     [:!QWERh :left_arrow]
+                     [:!QWERl :right_arrow]
+                     [:!QWERj :down_arrow]
+                     [:!QWERk :up_arrow]]}
 
-            {:des   "Hyper Caps Lock: Ctrl Mappings"
+            {:des   "SMASH Caps Lock: Ctrl Mappings"
              :rules [:Simple
-                     [:!!a :!Ta]
-                     [:!!e :!Te]
-                     [:!!w :!Tw]
-                     [:!!d :!Td]
-                     [:!!r :!Tr]
-                     [:!!x :!Tx]
-                     [:!!f :!Tf]
-                     [:!!b :!Tb]
-                     [:!!c :!Tc]
-                     [:!!v :!Tv]
-                     [:!!o :!To]
-                     [:!!tab :!Ttab]]}
+                     [:!QWERa :!Ta]
+                     [:!QWERe :!Te]
+                     [:!QWERw :!Tw]
+                     [:!QWERd :!Td]
+                     [:!QWERr :!Tr]
+                     [:!QWERx :!Tx]
+                     [:!QWERf :!Tf]
+                     [:!QWERb :!Tb]
+                     [:!QWERc :!Tc]
+                     [:!QWERv :!Tv]
+                     [:!QWERo :!To]
+                     [:!QWERtab :!Ttab]]}
+
+            {:des   "Hyper.app Scroll with J/K"
+             :rules [:Simple
+                     :Hyper
+                     [:!CQWERj :!Spage_down]
+                     [:!CQWERk :!Spage_up]
+                     ]}
+
 
             {:des   "Block left handed shift with left handed key"
              :rules [:Training
