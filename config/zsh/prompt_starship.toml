@@ -1,0 +1,10 @@
+[directory]
+truncate_to_repo=false
+
+[git_status]
+untracked="+"
+renamed="+"
+modified="+"
+stashed=""
+prefix=""
+suffix=" "

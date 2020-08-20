@@ -6,8 +6,8 @@
 
 bundles=(
     # use pure prompt
-    "mafredri/zsh-async, from:github"
-    "sindresorhus/pure, use:pure.zsh, from:github, as:theme"
+    ##"mafredri/zsh-async, from:github"
+    ##"sindresorhus/pure, use:pure.zsh, from:github, as:theme"
     # Display autosuggestions from history:
     "zsh-users/zsh-autosuggestions"
     # Completion definitions for lots of additional commands.
