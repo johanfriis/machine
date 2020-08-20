@@ -8,3 +8,6 @@ modified="+"
 stashed=""
 prefix=""
 suffix=" "
+
+[java]
+disabled=true
