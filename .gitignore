@@ -13,3 +13,7 @@ config/emacsenv.d/doom
 .idea
 *.iml
 config/zsh/.zcompdump
+config/vim/.netrwhist
+tools/menubar/node_modules
+config/karabiner/automatic_backups
+.DS_Store
