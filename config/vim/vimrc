@@ -54,8 +54,9 @@ set scrolloff=6
 "" change dir automatically
 set noautochdir
 
-"" set title of window
+"" Update term title but restore old title after leaving Vim
 set title
+set titleold=
 
 "" don't echo command
 set noshowcmd
